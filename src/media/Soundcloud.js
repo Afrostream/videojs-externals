@@ -257,7 +257,7 @@ Soundcloud.nativeSourceHandler = {};
  * @return {String}         'probably', 'maybe', or '' (empty string)
  */
 Soundcloud.nativeSourceHandler.canPlayType = function (source) {
-  return (source === 'video/soundcloud');
+  return (source.indexOf('soundcloud') !== -1);
 };
 
 /*
