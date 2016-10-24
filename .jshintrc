@@ -38,7 +38,9 @@
     // video.js
     "videojs",
     "YT",
-    "Image"
+    "Image",
+    //SOUNDCLOUD
+    "SC"
   ]
 }
 

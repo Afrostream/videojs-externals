@@ -1,9 +1,9 @@
 {
-  "name": "videojs-youtube",
-  "description": "YouTube playback technology for Video.js",
-  "version": "2.0.8",
-  "author": "Benoit Tremblay",
-  "main": "es5/Youtube.js",
+  "name": "videojs-externals",
+  "description": "Externals playback technology for Video.js",
+  "version": "1.0.1",
+  "author": "Benjamin Pott",
+  "main": "es5/videojs-externals.js",
   "license": "MIT",
   "keywords": [
     "video",
@@ -11,11 +11,13 @@
     "video.js",
     "vjs",
     "YouTube",
+    "Dailymotion",
+    "Soundcloud",
     "tech"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/eXon/videojs-youtube.git"
+    "url": "https://github.com/benjipott/videojs-externals.git"
   },
   "peerDependencies": {
     "video.js": "5.x"
@@ -25,11 +27,11 @@
     "build": "npm-run-all -p build:*",
     "build:js": "npm-run-all mkdirs build:js:babel build:js:browserify build:js:bannerize build:js:uglify",
     "build:js:babel": "babel src -d es5",
-    "build:js:bannerize": "bannerize dist/Youtube.js --banner=scripts/banner.ejs",
-    "build:js:browserify": "browserify . -s Youtube -o dist/Youtube.js",
-    "build:js:uglify": "uglifyjs dist/Youtube.js --comments --mangle --compress -o dist/Youtube.min.js",
+    "build:js:bannerize": "bannerize dist/videojs-externals.js --banner=scripts/banner.ejs",
+    "build:js:browserify": "browserify . -s videojs-externals -o dist/videojs-externals.js",
+    "build:js:uglify": "uglifyjs dist/videojs-externals.js --comments --mangle --compress -o dist/videojs-externals.min.js",
     "build:test": "npm-run-all mkdirs build:test:browserify",
-    "build:test:browserify": "browserify `find test -name '*.specs.js'` -t babelify -o dist-test/Youtube.js",
+    "build:test:browserify": "browserify `find test -name '*.specs.js'` -t babelify -o dist-test/videojs-externals.js",
     "lint": "jshint .",
     "clean": "rm -rf dist dist-test es5",
     "mkdirs": "mkdir -p dist dist-test es5",
@@ -37,7 +39,7 @@
     "prestart": "npm-run-all -p docs build",
     "dev": "npm-run-all -p start watch",
     "start": "npm-run-all -p start:serve",
-    "start:serve": "babel-node --optional es7.functionBind,es7.classProperties,es7.decorators  scripts/server.js",
+    "start:serve": "babel-node scripts/server.js",
     "pretest": "npm-run-all build:test",
     "test": "karma start --single-run test/karma/detected.js",
     "test:chrome": "npm run pretest && karma start test/karma/chrome.js",
@@ -45,7 +47,7 @@
     "test:ie": "npm run pretest && karma start test/karma/ie.js",
     "test:safari": "npm run pretest && karma start test/karma/safari.js",
     "watch": "npm run mkdirs && npm-run-all -p watch:*",
-    "watch:js": "watchify src/Youtube.js -t babelify -v -o dist/Youtube.js",
+    "watch:js": "watchify src/videojs-externals.js -t babelify -v -o dist/videojs-externals.js",
     "validate": "npm ls"
   },
   "pre-commit": [
@@ -60,13 +62,6 @@
     "qunit": "global:QUnit",
     "sinon": "global:sinon",
     "video.js": "global:videojs"
-  },
-  "babel": {
-    "optional": [
-      "es7.functionBind",
-      "es7.classProperties",
-      "es7.decorators"
-    ]
   },
   "devDependencies": {
     "babel": "^5.8.0",
@@ -91,7 +86,8 @@
     "karma-safari-launcher": "^0.1.0",
     "mkdirp": "^0.5.1",
     "precommit-hook": "^3.0.0",
-    "uglify-js": "^2.5.0"
+    "uglify-js": "^2.5.0",
+    "serve-static": "^1.10.0"
   },
   "dependencies": {
     "video.js": "^5.6.0"

@@ -1,5 +1,5 @@
 import videojs from 'video.js';
-import plugin from '../src/Youtube';
+import plugin from '../src/videojs-externals';
 
 const Youtube = videojs.getTech('Youtube');
 

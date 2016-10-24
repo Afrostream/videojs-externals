@@ -1,14 +1,15 @@
 /**
  * @file Youtube.js
- * Youtube Media Controller - Wrapper for HTML5 Media API
+ * Externals (iframe) Media Controller - Wrapper for HTML5 Media API
  */
 import videojs from 'video.js';
+import Externals from './Externals';
 
 const Component = videojs.getComponent('Component');
 const Tech = videojs.getComponent('Tech');
 
 /**
- * Youtube Media Controller - Wrapper for HTML5 Media API
+ * Externals Media Controller - Wrapper for HTML5 Media API
  *
  * @param {Object=} options Object of option names and values
  * @param {Function=} ready Ready callback function
@@ -16,63 +17,12 @@ const Tech = videojs.getComponent('Tech');
  * @class Youtube
  */
 
-class Youtube extends Tech {
+class Youtube extends Externals {
   constructor (options, ready) {
     super(options, ready);
-
-    this.setPoster(options.poster);
-    this.setSrc(this.options_.source, true);
-    // Set the vjs-youtube class to the player
-    // Parent is not set yet so we have to wait a tick
-    setTimeout(function () {
-      this.el_.parentNode.className += ' vjs-youtube';
-
-      if (_isOnMobile) {
-        this.el_.parentNode.className += ' vjs-youtube-mobile';
-      }
-
-      if (Youtube.isApiReady) {
-        this.initYTPlayer();
-      } else {
-        Youtube.apiReadyQueue.push(this);
-      }
-    }.bind(this));
   }
 
-  dispose () {
-    this.el_.parentNode.className = this.el_.parentNode.className
-      .replace(' vjs-youtube', '')
-      .replace(' vjs-youtube-mobile', '');
-    super.dispose(this);
-  }
-
-  createEl () {
-
-    let div = videojs.createEl('div', {
-      id: this.options_.techId,
-      style: 'width:100%;height:100%;top:0;left:0;position:absolute'
-    });
-
-    let divWrapper = videojs.createEl('div');
-    divWrapper.appendChild(div);
-
-    if (!_isOnMobile && !this.options_.ytControls) {
-      let divBlocker = videojs.createEl('div', {
-        className: 'vjs-iframe-blocker',
-        style: 'position:absolute;top:0;left:0;width:100%;height:100%'
-      });
-
-      // In case the blocker is still there and we want to pause
-      divBlocker.onclick = this.pause.bind(this);
-
-      divWrapper.appendChild(divBlocker);
-    }
-
-    return divWrapper;
-
-  }
-
-  initYTPlayer () {
+  initPlayer () {
     let playerVars = {
       controls: 0,
       modestbranding: 1,
@@ -185,20 +135,8 @@ class Youtube extends Tech {
     });
   }
 
-  onPlayerReady () {
-    this.playerReady_ = true;
-    this.triggerReady();
-
-    if (this.playOnReady) {
-      this.play();
-    }
-  }
-
-  onPlayerPlaybackQualityChange () {
-
-  }
-
   onPlayerStateChange (e) {
+    super.onPlayerStateChange(e);
     const state = e.data;
 
     if (state === this.lastState || this.errorNumber) {
@@ -241,13 +179,10 @@ class Youtube extends Tech {
         break;
     }
 
-    this.lastState = state;
   }
 
   onPlayerError (e) {
-    this.errorNumber = e.data;
-    this.trigger('error');
-
+    super.onPlayerError(e);
     this.ytPlayer.stopVideo();
     this.ytPlayer.destroy();
     this.ytPlayer = null;
@@ -269,37 +204,11 @@ class Youtube extends Tech {
     return {code: 'YouTube unknown error (' + this.errorNumber + ')'};
   }
 
-  src (src) {
-    if (src) {
-      this.setSrc({src: src});
-
-      if (this.options_.autoplay && !_isOnMobile) {
-        this.play();
-      }
-    }
-
-    return this.source;
-  }
-
-  poster () {
-    // You can't start programmaticlly a video with a mobile
-    // through the iframe so we hide the poster and the play button (with CSS)
-    if (_isOnMobile) {
-      return null;
-    }
-
-    return this.poster_;
-  }
-
-  setPoster (poster) {
-    this.poster_ = poster;
-  }
-
   setSrc (source) {
     if (!source || !source.src) {
       return;
     }
-
+    super.setSrc(source);
     delete this.errorNumber;
     this.source = source;
     this.url = Youtube.parseUrl(source.src);
@@ -314,7 +223,7 @@ class Youtube extends Tech {
       }
     }
 
-    if (this.options_.autoplay && !_isOnMobile) {
+    if (this.options_.autoplay && !Externals._isOnMobile) {
       if (this.isReady_) {
         this.play();
       } else {
@@ -499,17 +408,6 @@ class Youtube extends Tech {
     };
   }
 
-  // TODO: Can we really do something with this on YouTUbe?
-  load () {
-  }
-
-  resetction () {
-  }
-
-  supportsFullScreen () {
-    return true;
-  }
-
   // Tries to get the highest resolution thumbnail available for the video
   checkHighResPoster () {
     const uri = 'https://img.youtube.com/vi/' + this.url.videoId + '/maxresdefault.jpg';
@@ -538,10 +436,6 @@ class Youtube extends Tech {
   }
 }
 
-Youtube.prototype.options_ = {};
-
-Youtube.apiReadyQueue = [];
-
 /* Youtube Support Testing -------------------------------------------------------- */
 
 Youtube.isSupported = function () {
@@ -559,8 +453,6 @@ Tech.withSourceHandlers(Youtube);
  * @param  {Flash} tech  The instance of the Flash tech
  */
 Youtube.nativeSourceHandler = {};
-
-let _isOnMobile = /(iPad|iPhone|iPod|Android)/g.test(navigator.userAgent);
 
 Youtube.parseUrl = function (url) {
   let result = {
@@ -582,34 +474,6 @@ Youtube.parseUrl = function (url) {
   }
 
   return result;
-};
-
-const loadApi = function () {
-  let tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/iframe_api';
-  let firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-};
-
-const injectCss = function () {
-  let css = // iframe blocker to catch mouse events
-    '.vjs-youtube .vjs-iframe-blocker { display: none; }' +
-    '.vjs-youtube.vjs-user-inactive .vjs-iframe-blocker { display: block; }' +
-    '.vjs-youtube .vjs-poster { background-size: cover; }' +
-    '.vjs-youtube-mobile .vjs-big-play-button { display: none; }';
-
-  let head = document.head || document.getElementsByTagName('head')[0];
-
-  let style = document.createElement('style');
-  style.type = 'text/css';
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-
-  head.appendChild(style);
 };
 
 /**
@@ -653,20 +517,8 @@ Youtube.nativeSourceHandler.dispose = function () {
 // Register the native source handler
 Youtube.registerSourceHandler(Youtube.nativeSourceHandler);
 
-window.onYouTubeIframeAPIReady = function () {
-  Youtube.isApiReady = true;
-
-  for (let i = 0; i < Youtube.apiReadyQueue.length; ++i) {
-    Youtube.apiReadyQueue[i].initYTPlayer();
-  }
-};
-
-loadApi();
-injectCss();
-
 Component.registerComponent('Youtube', Youtube);
 
 Tech.registerTech('Youtube', Youtube);
-
 
 export default Youtube;

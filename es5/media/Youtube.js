@@ -1,6 +1,6 @@
 /**
  * @file Youtube.js
- * Youtube Media Controller - Wrapper for HTML5 Media API
+ * Externals (iframe) Media Controller - Wrapper for HTML5 Media API
  */
 'use strict';
 
@@ -22,11 +22,15 @@ var _videoJs = require('video.js');
 
 var _videoJs2 = _interopRequireDefault(_videoJs);
 
+var _Externals2 = require('./Externals');
+
+var _Externals3 = _interopRequireDefault(_Externals2);
+
 var Component = _videoJs2['default'].getComponent('Component');
 var Tech = _videoJs2['default'].getComponent('Tech');
 
 /**
- * Youtube Media Controller - Wrapper for HTML5 Media API
+ * Externals Media Controller - Wrapper for HTML5 Media API
  *
  * @param {Object=} options Object of option names and values
  * @param {Function=} ready Ready callback function
@@ -34,68 +38,20 @@ var Tech = _videoJs2['default'].getComponent('Tech');
  * @class Youtube
  */
 
-var Youtube = (function (_Tech) {
-  _inherits(Youtube, _Tech);
+var Youtube = (function (_Externals) {
+  _inherits(Youtube, _Externals);
 
   function Youtube(options, ready) {
     _classCallCheck(this, Youtube);
 
     _get(Object.getPrototypeOf(Youtube.prototype), 'constructor', this).call(this, options, ready);
-
-    this.setPoster(options.poster);
-    this.setSrc(this.options_.source, true);
-    // Set the vjs-youtube class to the player
-    // Parent is not set yet so we have to wait a tick
-    setTimeout((function () {
-      this.el_.parentNode.className += ' vjs-youtube';
-
-      if (_isOnMobile) {
-        this.el_.parentNode.className += ' vjs-youtube-mobile';
-      }
-
-      if (Youtube.isApiReady) {
-        this.initYTPlayer();
-      } else {
-        Youtube.apiReadyQueue.push(this);
-      }
-    }).bind(this));
   }
 
+  /* Youtube Support Testing -------------------------------------------------------- */
+
   _createClass(Youtube, [{
-    key: 'dispose',
-    value: function dispose() {
-      this.el_.parentNode.className = this.el_.parentNode.className.replace(' vjs-youtube', '').replace(' vjs-youtube-mobile', '');
-      _get(Object.getPrototypeOf(Youtube.prototype), 'dispose', this).call(this, this);
-    }
-  }, {
-    key: 'createEl',
-    value: function createEl() {
-
-      var div = _videoJs2['default'].createEl('div', {
-        id: this.options_.techId,
-        style: 'width:100%;height:100%;top:0;left:0;position:absolute'
-      });
-
-      var divWrapper = _videoJs2['default'].createEl('div');
-      divWrapper.appendChild(div);
-
-      if (!_isOnMobile && !this.options_.ytControls) {
-        var divBlocker = _videoJs2['default'].createEl('div', {
-          className: 'vjs-iframe-blocker',
-          style: 'position:absolute;top:0;left:0;width:100%;height:100%'
-        });
-
-        // In case the blocker is still there and we want to pause
-        divBlocker.onclick = this.pause.bind(this);
-
-        divWrapper.appendChild(divBlocker);
-      }
-
-      return divWrapper;
-    }
-  }, {
-    key: 'initYTPlayer',
-    value: function initYTPlayer() {
+    key: 'initPlayer',
+    value: function initPlayer() {
       var playerVars = {
         controls: 0,
         modestbranding: 1,
@@ -208,21 +164,9 @@ var Youtube = (function (_Tech) {
       });
     }
   }, {
-    key: 'onPlayerReady',
-    value: function onPlayerReady() {
-      this.playerReady_ = true;
-      this.triggerReady();
-
-      if (this.playOnReady) {
-        this.play();
-      }
-    }
-  }, {
-    key: 'onPlayerPlaybackQualityChange',
-    value: function onPlayerPlaybackQualityChange() {}
-  }, {
     key: 'onPlayerStateChange',
     value: function onPlayerStateChange(e) {
+      _get(Object.getPrototypeOf(Youtube.prototype), 'onPlayerStateChange', this).call(this, e);
       var state = e.data;
 
       if (state === this.lastState || this.errorNumber) {
@@ -264,15 +208,11 @@ var Youtube = (function (_Tech) {
           this.player_.trigger('waiting');
           break;
       }
-
-      this.lastState = state;
     }
   }, {
     key: 'onPlayerError',
     value: function onPlayerError(e) {
-      this.errorNumber = e.data;
-      this.trigger('error');
-
+      _get(Object.getPrototypeOf(Youtube.prototype), 'onPlayerError', this).call(this, e);
       this.ytPlayer.stopVideo();
       this.ytPlayer.destroy();
       this.ytPlayer = null;
@@ -295,41 +235,12 @@ var Youtube = (function (_Tech) {
       return { code: 'YouTube unknown error (' + this.errorNumber + ')' };
     }
   }, {
-    key: 'src',
-    value: function src(_src) {
-      if (_src) {
-        this.setSrc({ src: _src });
-
-        if (this.options_.autoplay && !_isOnMobile) {
-          this.play();
-        }
-      }
-
-      return this.source;
-    }
-  }, {
-    key: 'poster',
-    value: function poster() {
-      // You can't start programmaticlly a video with a mobile
-      // through the iframe so we hide the poster and the play button (with CSS)
-      if (_isOnMobile) {
-        return null;
-      }
-
-      return this.poster_;
-    }
-  }, {
-    key: 'setPoster',
-    value: function setPoster(poster) {
-      this.poster_ = poster;
-    }
-  }, {
     key: 'setSrc',
     value: function setSrc(source) {
       if (!source || !source.src) {
         return;
       }
-
+      _get(Object.getPrototypeOf(Youtube.prototype), 'setSrc', this).call(this, source);
       delete this.errorNumber;
       this.source = source;
       this.url = Youtube.parseUrl(source.src);
@@ -344,7 +255,7 @@ var Youtube = (function (_Tech) {
         }
       }
 
-      if (this.options_.autoplay && !_isOnMobile) {
+      if (this.options_.autoplay && !_Externals3['default']._isOnMobile) {
         if (this.isReady_) {
           this.play();
         } else {
@@ -541,19 +452,6 @@ var Youtube = (function (_Tech) {
       };
     }
 
-    // TODO: Can we really do something with this on YouTUbe?
-  }, {
-    key: 'load',
-    value: function load() {}
-  }, {
-    key: 'resetction',
-    value: function resetction() {}
-  }, {
-    key: 'supportsFullScreen',
-    value: function supportsFullScreen() {
-      return true;
-    }
-
     // Tries to get the highest resolution thumbnail available for the video
   }, {
     key: 'checkHighResPoster',
@@ -586,13 +484,7 @@ var Youtube = (function (_Tech) {
   }]);
 
   return Youtube;
-})(Tech);
-
-Youtube.prototype.options_ = {};
-
-Youtube.apiReadyQueue = [];
-
-/* Youtube Support Testing -------------------------------------------------------- */
+})(_Externals3['default']);
 
 Youtube.isSupported = function () {
   return true;
@@ -609,8 +501,6 @@ Tech.withSourceHandlers(Youtube);
  * @param  {Flash} tech  The instance of the Flash tech
  */
 Youtube.nativeSourceHandler = {};
-
-var _isOnMobile = /(iPad|iPhone|iPod|Android)/g.test(navigator.userAgent);
 
 Youtube.parseUrl = function (url) {
   var result = {
@@ -632,31 +522,6 @@ Youtube.parseUrl = function (url) {
   }
 
   return result;
-};
-
-var loadApi = function loadApi() {
-  var tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/iframe_api';
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-};
-
-var injectCss = function injectCss() {
-  var css = // iframe blocker to catch mouse events
-  '.vjs-youtube .vjs-iframe-blocker { display: none; }' + '.vjs-youtube.vjs-user-inactive .vjs-iframe-blocker { display: block; }' + '.vjs-youtube .vjs-poster { background-size: cover; }' + '.vjs-youtube-mobile .vjs-big-play-button { display: none; }';
-
-  var head = document.head || document.getElementsByTagName('head')[0];
-
-  var style = document.createElement('style');
-  style.type = 'text/css';
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-
-  head.appendChild(style);
 };
 
 /**
@@ -698,17 +563,6 @@ Youtube.nativeSourceHandler.dispose = function () {};
 
 // Register the native source handler
 Youtube.registerSourceHandler(Youtube.nativeSourceHandler);
-
-window.onYouTubeIframeAPIReady = function () {
-  Youtube.isApiReady = true;
-
-  for (var i = 0; i < Youtube.apiReadyQueue.length; ++i) {
-    Youtube.apiReadyQueue[i].initYTPlayer();
-  }
-};
-
-loadApi();
-injectCss();
 
 Component.registerComponent('Youtube', Youtube);
 
