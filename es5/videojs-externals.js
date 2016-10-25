@@ -6,6 +6,6 @@
 
 require('./media/Externals');
 
-//import './media/Youtube';
+require('./media/Youtube');
 
 require('./media/Soundcloud');
