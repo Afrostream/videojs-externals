@@ -1,9 +1,9 @@
 {
-  "name": "videojs-youtube",
-  "version": "2.0.0",
-  "homepage": "https://github.com/eXon/videojs-youtube",
+  "name": "videojs-externals",
+  "version": "2.0.8",
+  "homepage": "https://github.com/benjipott/videojs-externals",
   "authors": [
-    "Benoit Tremblay <trembl.ben@gmail.com>"
+    "Benjipott <pott.benjamin@gmail.com>"
   ],
   "description": "YouTube playback technology for Video.js",
   "main": "dist/Youtube.min.js",
@@ -14,6 +14,8 @@
     "video.js",
     "vjs",
     "YouTube",
+    "Dailymotion",
+    "Soundcloud",
     "tech"
   ],
   "ignore": [
@@ -22,7 +24,7 @@
     ".jshintrc",
     ".jshintignore",
     "src",
-    "tests",
+    "test",
     "karma.conf.js"
   ],
   "dependencies": {
