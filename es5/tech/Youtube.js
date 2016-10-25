@@ -224,9 +224,9 @@ var Youtube = (function (_Externals) {
       }
 
       //FIXME replace this (warn autoplay)
-      //if (!this.isSeeking) {
-      //  this.wasPausedBeforeSeek = this.paused();
-      //}
+      if (!this.isSeeking) {
+        this.wasPausedBeforeSeek = this.paused();
+      }
 
       this.widgetPlayer.seekTo(seconds, true);
       this.trigger('timeupdate');
