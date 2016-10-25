@@ -48,6 +48,12 @@ var Soundcloud = (function (_Externals) {
   }
 
   _createClass(Soundcloud, [{
+    key: 'injectCss',
+    value: function injectCss() {
+      var css = '.vjs-' + this.className_ + ' > .vjs-poster { background-size:contain; background-position: 0 50%; background-color: transparent; }\n    .vjs-' + this.className_ + ' .vjs-control-bar {font-size: 2em;}\n    .vjs-' + this.className_ + ' .vjs-tech > .vjs-poster {background-color: rgba(76, 50, 65, 0.35);}\n    .vjs-soundcloud-info{position:absolute;padding:3em 1em 1em 1em;left:40%;top:0;right:0;bottom:0; font-size:2em; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}';
+      _get(Object.getPrototypeOf(Soundcloud.prototype), 'injectCss', this).call(this, css);
+    }
+  }, {
     key: 'createEl',
     value: function createEl() {
       var soundcloudSource = null;
@@ -57,15 +63,25 @@ var Soundcloud = (function (_Externals) {
         soundcloudSource = this.options_.source.src;
       }
 
-      var el_ = _get(Object.getPrototypeOf(Soundcloud.prototype), 'createEl', this).call(this, {
+      var el_ = _get(Object.getPrototypeOf(Soundcloud.prototype), 'createEl', this).call(this, 'iframe', {
         width: '100%',
         height: '100%',
         src: 'https://w.soundcloud.com/player/?url=' + soundcloudSource + '&auto_play=' + this.options_.autoplay + '\n      &buying=false&liking=false&sharing=false&show_comments=false&show_playcount=false&show_user=false'
       });
 
-      el_.style.visibility = this.options_.visibility;
+      this.infosEl_ = _videoJs2['default'].createEl('div', {
+        className: 'vjs-soundcloud-info'
+      });
+
+      el_.firstChild.style.visibility = this.options_.visibility;
+      el_.appendChild(this.infosEl_);
 
       return el_;
+    }
+  }, {
+    key: 'isApiReady',
+    value: function isApiReady() {
+      return window['SC'];
     }
   }, {
     key: 'onStateChange',
@@ -73,6 +89,9 @@ var Soundcloud = (function (_Externals) {
       var state = event.type;
       switch (state) {
         case -1:
+          this.trigger('loadstart');
+          this.trigger('loadedmetadata');
+          this.trigger('durationchange');
           break;
 
         case SC.Widget.Events.READY:
@@ -153,6 +172,11 @@ var Soundcloud = (function (_Externals) {
         _loop();
       }
     }
+  }, {
+    key: 'ended',
+    value: function ended() {
+      return this.duration() === this.currentTime();
+    }
 
     /**
      * Request to enter fullscreen
@@ -216,10 +240,17 @@ var Soundcloud = (function (_Externals) {
           }
           var sound = sounds[0];
           _this5.setPoster(sound['artwork_url'].replace('large.jpg', 't500x500.jpg'));
+          _this5.subPosterImage.update(sound['waveform_url'].replace('wis', 'w1').replace('json', 'png'));
+          _this5.update(sound);
         });
       } catch (e) {
         console.log('unable to set poster', e);
       }
+    }
+  }, {
+    key: 'update',
+    value: function update(sound) {
+      this.infosEl_.innerHTML = sound.title;
     }
   }, {
     key: 'src',
@@ -291,10 +322,12 @@ var Soundcloud = (function (_Externals) {
   return Soundcloud;
 })(_Externals3['default']);
 
+_Externals3['default'].prototype.className_ = 'soundcloud';
+
 Soundcloud.prototype.options_ = {
   api: '//w.soundcloud.com/player/api.js',
-  visibility: 'hidden'
-  //children: ['posterImage'],
+  visibility: 'hidden',
+  children: ['subPosterImage']
 };
 
 Soundcloud.apiReadyQueue = [];

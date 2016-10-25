@@ -2,7 +2,7 @@
   "esversion": 6,
   "camelcase": true,
   "indent": 2,
-  "maxlen": 120,
+  "maxlen": 180,
   "trailing": true,
   "bitwise": true,
   "curly": true,

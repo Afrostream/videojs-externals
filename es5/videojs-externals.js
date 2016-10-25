@@ -4,8 +4,10 @@
  */
 'use strict';
 
-require('./media/Externals');
+require('./tech/Externals');
 
-require('./media/Youtube');
+require('./tech/Youtube');
 
-require('./media/Soundcloud');
+require('./tech/Soundcloud');
+
+require('./component/sub-poster-image');

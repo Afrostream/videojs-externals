@@ -22,6 +22,14 @@ class Soundcloud extends Externals {
     super(options, ready);
   }
 
+  injectCss () {
+    let css = `.vjs-${this.className_} > .vjs-poster { background-size:contain; background-position: 0 50%; background-color: transparent; }
+    .vjs-${this.className_} .vjs-control-bar {font-size: 2em;}
+    .vjs-${this.className_} .vjs-tech > .vjs-poster {background-color: rgba(76, 50, 65, 0.35);}
+    .vjs-soundcloud-info{position:absolute;padding:3em 1em 1em 1em;left:40%;top:0;right:0;bottom:0; font-size:2em; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}`;
+    super.injectCss(css);
+  }
+
   createEl () {
     let soundcloudSource = null;
     if ('string' === typeof this.options_.source) {
@@ -31,22 +39,34 @@ class Soundcloud extends Externals {
       soundcloudSource = this.options_.source.src;
     }
 
-    const el_ = super.createEl({
+    const el_ = super.createEl('iframe', {
       width: '100%',
       height: '100%',
       src: `https://w.soundcloud.com/player/?url=${soundcloudSource}&auto_play=${this.options_.autoplay}
       &buying=false&liking=false&sharing=false&show_comments=false&show_playcount=false&show_user=false`
     });
 
-    el_.style.visibility = this.options_.visibility;
+    this.infosEl_ = videojs.createEl('div', {
+      className: 'vjs-soundcloud-info'
+    });
+
+    el_.firstChild.style.visibility = this.options_.visibility;
+    el_.appendChild(this.infosEl_);
 
     return el_;
+  }
+
+  isApiReady () {
+    return window['SC'];
   }
 
   onStateChange (event) {
     let state = event.type;
     switch (state) {
       case -1:
+        this.trigger('loadstart');
+        this.trigger('loadedmetadata');
+        this.trigger('durationchange');
         break;
 
       case SC.Widget.Events.READY:
@@ -118,6 +138,10 @@ class Soundcloud extends Externals {
     }
   }
 
+  ended () {
+    return this.duration() === this.currentTime();
+  }
+
   /**
    * Request to enter fullscreen
    *
@@ -164,10 +188,16 @@ class Soundcloud extends Externals {
         }
         const sound = sounds[0];
         this.setPoster(sound['artwork_url'].replace('large.jpg', 't500x500.jpg'));
+        this.subPosterImage.update(sound['waveform_url'].replace('wis', 'w1').replace('json', 'png'));
+        this.update(sound);
       });
     } catch (e) {
       console.log('unable to set poster', e);
     }
+  }
+
+  update (sound) {
+    this.infosEl_.innerHTML = sound.title;
   }
 
   src (src) {
@@ -225,10 +255,12 @@ class Soundcloud extends Externals {
   }
 }
 
+Externals.prototype.className_ = 'soundcloud';
+
 Soundcloud.prototype.options_ = {
   api: '//w.soundcloud.com/player/api.js',
-  visibility: 'hidden'
-  //children: ['posterImage'],
+  visibility: 'hidden',
+  children: ['subPosterImage']
 };
 
 Soundcloud.apiReadyQueue = [];

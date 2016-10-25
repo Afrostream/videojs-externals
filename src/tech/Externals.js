@@ -38,27 +38,48 @@ class Externals extends Tech {
     }
 
     this.videoId = this.parseSrc(options.source.src);
-    //if (Externals.isApiReady) {
-    this.loadApi();
 
-    //} else {
-    //   Add to the queue because the Externals API is not ready
-    //Externals.apiReadyQueue.push(this);
-    //}
+    this.loadApi();
+    this.injectCss();
+  }
+
+  injectCss (overrideStyle) {
+    let css = // iframe blocker to catch mouse events
+      `.vjs-${this.className_} .vjs-iframe-blocker { display: none; }
+      .vjs-${this.className_}.vjs-user-inactive .vjs-iframe-blocker { display: block; }
+      .vjs-${this.className_} .vjs-poster { background-size: cover; }
+      .vjs-${this.className_}-mobile .vjs-big-play-button { display: none; }`;
+
+    if (overrideStyle) {
+      css += overrideStyle;
+    }
+
+    let head = document.head || document.getElementsByTagName('head')[0];
+
+    let style = document.createElement('style');
+    style.type = 'text/css';
+
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
+
+    head.appendChild(style);
   }
 
   parseSrc (src) {
     return src;
   }
 
-  createEl (options) {
+  createEl (type, options) {
 
     let el = videojs.createEl('div', {
       id: 'vjs-tech' + this.options_.techId,
       className: 'vjs-tech vjs-tech-' + this.className_,
     });
 
-    let iframeContainer = videojs.createEl('iframe', videojs.mergeOptions({
+    let iframeContainer = videojs.createEl(type, videojs.mergeOptions({
       id: this.options_.techId,
       scrolling: 'no',
       marginWidth: 0,
@@ -70,8 +91,8 @@ class Externals extends Tech {
     }, options));
 
     el.appendChild(iframeContainer);
-
-    if (/MSIE (\d+\.\d+);/.test(navigator.userAgent) || !/(iPad|iPhone|iPod|Android)/g.test(navigator.userAgent)) {
+    const isOnMobile = this.isOnMobile();
+    if (!isOnMobile) {
       let divBlocker = videojs.createEl('div',
         {
           className: 'vjs-iframe-blocker',
@@ -86,7 +107,14 @@ class Externals extends Tech {
       el.appendChild(divBlocker);
     }
 
+    const tagPlayer = videojs(this.options_.playerId);
+    tagPlayer.addClass('vjs-' + this.className_ + (isOnMobile ? '-mobile' : ''));
+
     return el;
+  }
+
+  isOnMobile () {
+    return videojs.browser.IS_EDGE || videojs.browser.IS_ANDROID || videojs.browser.IS_IOS;
   }
 
   addScriptTag () {
@@ -112,7 +140,17 @@ class Externals extends Tech {
   }
 
   loadApi () {
-    this.addScriptTag();
+    if (!this.isApiReady()) {
+      this.addScriptTag();
+
+    } else {
+      //Add to the queue because the Externals API is not ready
+      this.apiReadyQueue.push(this);
+    }
+  }
+
+  isApiReady () {
+    return false;
   }
 
   setupTriggers () {
@@ -276,83 +314,10 @@ Externals.prototype.options_ = {
   visibility: 'hidden'
 };
 
-Externals.apiReadyQueue = [];
+Externals.prototype.apiReadyQueue = [];
 
 
 /* Externals Support Testing -------------------------------------------------------- */
-
-Externals.isSupported = function () {
-  return true;
-};
-
-// Add Source Handler pattern functions to this tech
-Tech.withSourceHandlers(Externals);
-
-/*
- * The default native source handler.
- * This simply passes the source to the video element. Nothing fancy.
- *
- * @param  {Object} source   The source object
- * @param  {Flash} tech  The instance of the Flash tech
- */
-Externals.nativeSourceHandler = {};
-
-/**
- * Check if Flash can play the given videotype
- * @param  {String} type    The mimetype to check
- * @return {String}         'probably', 'maybe', or '' (empty string)
- */
-Externals.nativeSourceHandler.canPlayType = function (source) {
-
-  const dashExtRE = /^video\/(externals)/i;
-
-  if (dashExtRE.test(source)) {
-    return 'maybe';
-  } else {
-    return '';
-  }
-
-};
-
-/*
- * Check Flash can handle the source natively
- *
- * @param  {Object} source  The source object
- * @return {String}         'probably', 'maybe', or '' (empty string)
- */
-Externals.nativeSourceHandler.canHandleSource = function (source) {
-
-  // If a type was provided we should rely on that
-  if (source.type) {
-    return Externals.nativeSourceHandler.canPlayType(source.type);
-  } else if (source.src) {
-    return Externals.nativeSourceHandler.canPlayType(source.src);
-  }
-
-  return '';
-};
-
-/*
- * Pass the source to the flash object
- * Adaptive source handlers will have more complicated workflows before passing
- * video data to the video element
- *
- * @param  {Object} source    The source object
- * @param  {Flash} tech   The instance of the Flash tech
- */
-Externals.nativeSourceHandler.handleSource = function (source, tech) {
-  tech.src(source.src);
-};
-
-/*
- * Clean up the source handler when disposing the player or switching sources..
- * (no cleanup is needed when supporting the format natively)
- */
-Externals.nativeSourceHandler.dispose = function () {
-};
-
-// Register the native source handler
-Externals.registerSourceHandler(Externals.nativeSourceHandler);
 
 /*
  * Set the tech's volume control support status

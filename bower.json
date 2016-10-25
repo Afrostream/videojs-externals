@@ -1,12 +1,12 @@
 {
   "name": "videojs-externals",
   "version": "1.0.2",
-  "homepage": "https://github.com/benjipott/videojs-externals",
+  "homepage": "https://github.com/Afrostream/videojs-externals",
   "authors": [
     "Benjipott <pott.benjamin@gmail.com>"
   ],
-  "description": "YouTube playback technology for Video.js",
-  "main": "es5/videojs-externals.js",
+  "description": "Externals playback technology for Video.js",
+  "main": "dist/Youtube.min.js",
   "license": "MIT",
   "keywords": [
     "video",

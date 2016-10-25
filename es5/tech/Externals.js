@@ -60,30 +60,49 @@ var Externals = (function (_Tech) {
     }
 
     this.videoId = this.parseSrc(options.source.src);
-    //if (Externals.isApiReady) {
-    this.loadApi();
 
-    //} else {
-    //   Add to the queue because the Externals API is not ready
-    //Externals.apiReadyQueue.push(this);
-    //}
+    this.loadApi();
+    this.injectCss();
   }
 
   _createClass(Externals, [{
+    key: 'injectCss',
+    value: function injectCss(overrideStyle) {
+      var css = // iframe blocker to catch mouse events
+      '.vjs-' + this.className_ + ' .vjs-iframe-blocker { display: none; }\n      .vjs-' + this.className_ + '.vjs-user-inactive .vjs-iframe-blocker { display: block; }\n      .vjs-' + this.className_ + ' .vjs-poster { background-size: cover; }\n      .vjs-' + this.className_ + '-mobile .vjs-big-play-button { display: none; }';
+
+      if (overrideStyle) {
+        css += overrideStyle;
+      }
+
+      var head = document.head || document.getElementsByTagName('head')[0];
+
+      var style = document.createElement('style');
+      style.type = 'text/css';
+
+      if (style.styleSheet) {
+        style.styleSheet.cssText = css;
+      } else {
+        style.appendChild(document.createTextNode(css));
+      }
+
+      head.appendChild(style);
+    }
+  }, {
     key: 'parseSrc',
     value: function parseSrc(src) {
       return src;
     }
   }, {
     key: 'createEl',
-    value: function createEl(options) {
+    value: function createEl(type, options) {
 
       var el = _videoJs2['default'].createEl('div', {
         id: 'vjs-tech' + this.options_.techId,
         className: 'vjs-tech vjs-tech-' + this.className_
       });
 
-      var iframeContainer = _videoJs2['default'].createEl('iframe', _videoJs2['default'].mergeOptions({
+      var iframeContainer = _videoJs2['default'].createEl(type, _videoJs2['default'].mergeOptions({
         id: this.options_.techId,
         scrolling: 'no',
         marginWidth: 0,
@@ -95,8 +114,8 @@ var Externals = (function (_Tech) {
       }, options));
 
       el.appendChild(iframeContainer);
-
-      if (/MSIE (\d+\.\d+);/.test(navigator.userAgent) || !/(iPad|iPhone|iPod|Android)/g.test(navigator.userAgent)) {
+      var isOnMobile = this.isOnMobile();
+      if (!isOnMobile) {
         var divBlocker = _videoJs2['default'].createEl('div', {
           className: 'vjs-iframe-blocker',
           style: 'position:absolute;top:0;left:0;width:100%;height:100%'
@@ -110,7 +129,15 @@ var Externals = (function (_Tech) {
         el.appendChild(divBlocker);
       }
 
+      var tagPlayer = (0, _videoJs2['default'])(this.options_.playerId);
+      tagPlayer.addClass('vjs-' + this.className_ + (isOnMobile ? '-mobile' : ''));
+
       return el;
+    }
+  }, {
+    key: 'isOnMobile',
+    value: function isOnMobile() {
+      return _videoJs2['default'].browser.IS_EDGE || _videoJs2['default'].browser.IS_ANDROID || _videoJs2['default'].browser.IS_IOS;
     }
   }, {
     key: 'addScriptTag',
@@ -138,7 +165,17 @@ var Externals = (function (_Tech) {
   }, {
     key: 'loadApi',
     value: function loadApi() {
-      this.addScriptTag();
+      if (!this.isApiReady()) {
+        this.addScriptTag();
+      } else {
+        //Add to the queue because the Externals API is not ready
+        this.apiReadyQueue.push(this);
+      }
+    }
+  }, {
+    key: 'isApiReady',
+    value: function isApiReady() {
+      return false;
     }
   }, {
     key: 'setupTriggers',
@@ -329,80 +366,9 @@ Externals.prototype.options_ = {
   visibility: 'hidden'
 };
 
-Externals.apiReadyQueue = [];
+Externals.prototype.apiReadyQueue = [];
 
 /* Externals Support Testing -------------------------------------------------------- */
-
-Externals.isSupported = function () {
-  return true;
-};
-
-// Add Source Handler pattern functions to this tech
-Tech.withSourceHandlers(Externals);
-
-/*
- * The default native source handler.
- * This simply passes the source to the video element. Nothing fancy.
- *
- * @param  {Object} source   The source object
- * @param  {Flash} tech  The instance of the Flash tech
- */
-Externals.nativeSourceHandler = {};
-
-/**
- * Check if Flash can play the given videotype
- * @param  {String} type    The mimetype to check
- * @return {String}         'probably', 'maybe', or '' (empty string)
- */
-Externals.nativeSourceHandler.canPlayType = function (source) {
-
-  var dashExtRE = /^video\/(externals)/i;
-
-  if (dashExtRE.test(source)) {
-    return 'maybe';
-  } else {
-    return '';
-  }
-};
-
-/*
- * Check Flash can handle the source natively
- *
- * @param  {Object} source  The source object
- * @return {String}         'probably', 'maybe', or '' (empty string)
- */
-Externals.nativeSourceHandler.canHandleSource = function (source) {
-
-  // If a type was provided we should rely on that
-  if (source.type) {
-    return Externals.nativeSourceHandler.canPlayType(source.type);
-  } else if (source.src) {
-    return Externals.nativeSourceHandler.canPlayType(source.src);
-  }
-
-  return '';
-};
-
-/*
- * Pass the source to the flash object
- * Adaptive source handlers will have more complicated workflows before passing
- * video data to the video element
- *
- * @param  {Object} source    The source object
- * @param  {Flash} tech   The instance of the Flash tech
- */
-Externals.nativeSourceHandler.handleSource = function (source, tech) {
-  tech.src(source.src);
-};
-
-/*
- * Clean up the source handler when disposing the player or switching sources..
- * (no cleanup is needed when supporting the format natively)
- */
-Externals.nativeSourceHandler.dispose = function () {};
-
-// Register the native source handler
-Externals.registerSourceHandler(Externals.nativeSourceHandler);
 
 /*
  * Set the tech's volume control support status
