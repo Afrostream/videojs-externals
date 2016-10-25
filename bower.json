@@ -6,7 +6,7 @@
     "Benjipott <pott.benjamin@gmail.com>"
   ],
   "description": "Externals playback technology for Video.js",
-  "main": "dist/Youtube.min.js",
+  "main": "es5/videojs-externals.js",
   "license": "MIT",
   "keywords": [
     "video",
