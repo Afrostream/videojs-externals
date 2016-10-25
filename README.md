@@ -1,5 +1,7 @@
 # Externals Player Playback Technology<br />for [Video.js](https://github.com/videojs/video.js)
 
+![Alt text](https://cloud.githubusercontent.com/assets/3854951/19686244/92827b54-9ac0-11e6-8b6c-95f361cd2f3a.png "Soundcloud sample")
+
 ## Install
 You can use bower (`bower install videojs-externals`), npm (`npm install videojs-externals`) or the source and build it using `npm run build`. Then, the only file you need is dist/videojs-externals.min.js.
 
