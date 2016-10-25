@@ -223,9 +223,10 @@ var Youtube = (function (_Externals) {
         this.timeBeforeSeek = this.currentTime();
       }
 
-      if (!this.isSeeking) {
-        this.wasPausedBeforeSeek = this.paused();
-      }
+      //FIXME replace this (warn autoplay)
+      //if (!this.isSeeking) {
+      //  this.wasPausedBeforeSeek = this.paused();
+      //}
 
       this.widgetPlayer.seekTo(seconds, true);
       this.trigger('timeupdate');
