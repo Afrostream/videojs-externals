@@ -79,7 +79,7 @@ Thanks to Steve Heffernan for the amazing Video.js and to John Hurliman for the 
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2014-2015 Benjipott <pott.benjamin@gmail.com>
+Copyright (c) 2016 Benjipott <pott.benjamin@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
