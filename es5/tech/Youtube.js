@@ -78,8 +78,8 @@ var Youtube = (function (_Externals) {
   }, {
     key: 'onStateChange',
     value: function onStateChange(event) {
-      var state = JSON.parse(event.data);
-      switch (state.info) {
+      var state = event.data;
+      switch (state) {
         case -1:
           this.trigger('loadstart');
           this.trigger('loadedmetadata');
@@ -115,7 +115,7 @@ var Youtube = (function (_Externals) {
           this.player_.trigger('waiting');
           break;
       }
-      this.lastState = state.info;
+      this.lastState = state;
     }
   }, {
     key: 'parseSrc',
@@ -134,11 +134,12 @@ var Youtube = (function (_Externals) {
     key: 'onReady',
     value: function onReady() {
       _get(Object.getPrototypeOf(Youtube.prototype), 'onReady', this).call(this);
+      this.updateVolume();
     }
   }, {
     key: 'onYoutubeReady',
     value: function onYoutubeReady() {
-      for (var i = 0; i < Youtube.apiReadyQueue.length; ++i) {
+      for (var i = 0; i < this.apiReadyQueue.length; ++i) {
         this.apiReadyQueue[i].onYoutubeReady();
       }
       var source = null;
@@ -252,6 +253,11 @@ var Youtube = (function (_Externals) {
     value: function onSeeked() {
       this.clearInterval(this.checkSeekedInPauseInterval);
       this.isSeeking = false;
+
+      if (this.wasPausedBeforeSeek) {
+        this.pause();
+      }
+
       this.trigger('seeked');
     }
   }, {
@@ -273,7 +279,7 @@ var Youtube = (function (_Externals) {
   }, {
     key: 'paused',
     value: function paused() {
-      return true;
+      return this.widgetPlayer && this.lastState !== YT.PlayerState.PLAYING && this.lastState !== YT.PlayerState.BUFFERING;
     }
   }, {
     key: 'muted',
@@ -297,7 +303,10 @@ var Youtube = (function (_Externals) {
     key: 'setMuted',
     value: function setMuted(muted) {
       this.muted_ = muted;
-      this.widgetPlayer.setVolume(muted ? 0 : this.volume_);
+      if (muted) {
+        this.volumeBefore_ = this.volume_;
+      }
+      this.widgetPlayer.setVolume(muted ? 0 : this.volumeBefore_);
       this.updateVolume();
     }
   }]);
@@ -308,12 +317,9 @@ var Youtube = (function (_Externals) {
 Youtube.prototype.options_ = {
   api: '//www.youtube.com/iframe_api',
   visibility: 'visible'
-  //children: ['posterImage'],
 };
 
-_Externals3['default'].prototype.className_ = 'youtube';
-
-Youtube.apiReadyQueue = [];
+Youtube.prototype.className_ = 'youtube';
 
 /* Youtube Support Testing -------------------------------------------------------- */
 

@@ -50,7 +50,7 @@ var Soundcloud = (function (_Externals) {
   _createClass(Soundcloud, [{
     key: 'injectCss',
     value: function injectCss() {
-      var css = '.vjs-' + this.className_ + ' > .vjs-poster { background-size:contain; background-position: 0 50%; background-color: transparent; }\n    .vjs-' + this.className_ + ' .vjs-tech > .vjs-poster {background-color: rgba(76, 50, 65, 0.35);}\n    .vjs-soundcloud-info{position:absolute;padding:3em 1em 1em 1em;left:40%;top:0;right:0;bottom:0; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}';
+      var css = '.vjs-' + this.className_ + ' > .vjs-poster { background-size:contain; background-position: 0 50%; background-color: transparent; }\n    .vjs-' + this.className_ + ' .vjs-tech > .vjs-poster {background-color: rgba(76, 50, 65, 0.35);}\n    .vjs-soundcloud-info{position:absolute;padding:3em 1em 1em 1em;left:60%;top:0;right:0;bottom:0; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}';
       _get(Object.getPrototypeOf(Soundcloud.prototype), 'injectCss', this).call(this, css);
     }
   }, {
@@ -322,15 +322,13 @@ var Soundcloud = (function (_Externals) {
   return Soundcloud;
 })(_Externals3['default']);
 
-_Externals3['default'].prototype.className_ = 'soundcloud';
+Soundcloud.prototype.className_ = 'soundcloud';
 
 Soundcloud.prototype.options_ = {
   api: '//w.soundcloud.com/player/api.js',
   visibility: 'hidden',
   children: ['subPosterImage']
 };
-
-Soundcloud.apiReadyQueue = [];
 
 /* Soundcloud Support Testing -------------------------------------------------------- */
 

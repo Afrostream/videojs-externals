@@ -50,8 +50,8 @@ class Youtube extends Externals {
   }
 
   onStateChange (event) {
-    let state = JSON.parse(event.data);
-    switch (state.info) {
+    let state = event.data;
+    switch (state) {
       case -1:
         this.trigger('loadstart');
         this.trigger('loadedmetadata');
@@ -87,7 +87,7 @@ class Youtube extends Externals {
         this.player_.trigger('waiting');
         break;
     }
-    this.lastState = state.info;
+    this.lastState = state;
   }
 
   parseSrc (src) {
@@ -104,10 +104,11 @@ class Youtube extends Externals {
 
   onReady () {
     super.onReady();
+    this.updateVolume();
   }
 
   onYoutubeReady () {
-    for (let i = 0; i < Youtube.apiReadyQueue.length; ++i) {
+    for (let i = 0; i < this.apiReadyQueue.length; ++i) {
       this.apiReadyQueue[i].onYoutubeReady();
     }
     let source = null;
@@ -220,6 +221,11 @@ class Youtube extends Externals {
   onSeeked () {
     this.clearInterval(this.checkSeekedInPauseInterval);
     this.isSeeking = false;
+
+    if (this.wasPausedBeforeSeek) {
+      this.pause();
+    }
+
     this.trigger('seeked');
   }
 
@@ -237,7 +243,7 @@ class Youtube extends Externals {
   }
 
   paused () {
-    return true;
+    return this.widgetPlayer && (this.lastState !== YT.PlayerState.PLAYING && this.lastState !== YT.PlayerState.BUFFERING);
   }
 
   muted () {
@@ -257,7 +263,10 @@ class Youtube extends Externals {
 
   setMuted (muted) {
     this.muted_ = muted;
-    this.widgetPlayer.setVolume(muted ? 0 : this.volume_);
+    if (muted) {
+      this.volumeBefore_ = this.volume_;
+    }
+    this.widgetPlayer.setVolume(muted ? 0 : this.volumeBefore_);
     this.updateVolume();
   }
 }
@@ -265,12 +274,9 @@ class Youtube extends Externals {
 Youtube.prototype.options_ = {
   api: '//www.youtube.com/iframe_api',
   visibility: 'visible'
-  //children: ['posterImage'],
 };
 
-Externals.prototype.className_ = 'youtube';
-
-Youtube.apiReadyQueue = [];
+Youtube.prototype.className_ = 'youtube';
 
 /* Youtube Support Testing -------------------------------------------------------- */
 
