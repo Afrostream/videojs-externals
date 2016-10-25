@@ -1,5 +1,7 @@
 # Externals Player Playback Technology<br />for [Video.js](https://github.com/videojs/video.js)
 
+![Alt text](https://cloud.githubusercontent.com/assets/3854951/19686244/92827b54-9ac0-11e6-8b6c-95f361cd2f3a.png "Soundcloud sample")
+
 ## Install
 You can use bower (`bower install videojs-externals`), npm (`npm install videojs-externals`) or the source and build it using `npm run build`. Then, the only file you need is dist/videojs-externals.min.js.
 
@@ -77,7 +79,7 @@ Thanks to Steve Heffernan for the amazing Video.js and to John Hurliman for the 
 ## License
 The MIT License (MIT)
 
-Copyright (c) 2014-2015 Benjipott <pott.benjamin@gmail.com>
+Copyright (c) 2016 Benjipott <pott.benjamin@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
