@@ -50,7 +50,7 @@ var Soundcloud = (function (_Externals) {
   _createClass(Soundcloud, [{
     key: 'injectCss',
     value: function injectCss() {
-      var css = '.vjs-' + this.className_ + ' > .vjs-poster { background-size:contain; background-position: 0 50%; background-color: transparent; }\n    .vjs-' + this.className_ + ' .vjs-tech > .vjs-poster {background-color: rgba(76, 50, 65, 0.35);}\n    .vjs-soundcloud-info{position:absolute;padding:3em 1em 1em 1em;left:60%;top:0;right:0;bottom:0; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}';
+      var css = '.vjs-' + this.className_ + ' > .vjs-poster { display:block; width:50%; background-size:contain; background-position: 0 50%; background-color: transparent; }\n    .vjs-' + this.className_ + ' .vjs-tech > .vjs-poster {  display:block; background-color: rgba(76, 50, 65, 0.35);}\n    .vjs-soundcloud-info{position:absolute;padding:3em 1em 1em 1em;left:50%;top:0;right:0;bottom:0; text-align: center; pointer-events: none; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}';
       _get(Object.getPrototypeOf(Soundcloud.prototype), 'injectCss', this).call(this, css);
     }
   }, {
@@ -153,11 +153,16 @@ var Soundcloud = (function (_Externals) {
       this.updatePoster();
     }
   }, {
+    key: 'initTech',
+    value: function initTech() {
+      this.widgetPlayer = SC.Widget(this.options_.techId);
+      _get(Object.getPrototypeOf(Soundcloud.prototype), 'initTech', this).call(this);
+    }
+  }, {
     key: 'setupTriggers',
     value: function setupTriggers() {
       var _this = this;
 
-      this.widgetPlayer = SC.Widget(this.options_.techId);
       this.widgetPlayer.vjsTech = this;
 
       var _loop = function () {
@@ -234,11 +239,10 @@ var Soundcloud = (function (_Externals) {
       var _this5 = this;
 
       try {
-        this.widgetPlayer.getSounds(function (sounds) {
-          if (!sounds) {
+        this.widgetPlayer.getCurrentSound(function (sound) {
+          if (!sound) {
             return;
           }
-          var sound = sounds[0];
           _this5.setPoster(sound['artwork_url'].replace('large.jpg', 't500x500.jpg'));
           _this5.subPosterImage.update(sound['waveform_url'].replace('wis', 'w1').replace('json', 'png'));
           _this5.update(sound);

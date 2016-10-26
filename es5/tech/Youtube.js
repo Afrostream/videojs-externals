@@ -137,10 +137,24 @@ var Youtube = (function (_Externals) {
       this.updateVolume();
     }
   }, {
+    key: 'isApiReady',
+    value: function isApiReady() {
+      return window['YT'] && window['YT']['Player'];
+    }
+  }, {
     key: 'onYoutubeReady',
     value: function onYoutubeReady() {
-      for (var i = 0; i < this.apiReadyQueue.length; ++i) {
-        this.apiReadyQueue[i].onYoutubeReady();
+      YT.ready((function () {
+        for (var i = 0; i < _Externals3['default'].apiReadyQueue.length; ++i) {
+          _Externals3['default'].apiReadyQueue[i].initTech();
+        }
+      }).bind(this));
+    }
+  }, {
+    key: 'initTech',
+    value: function initTech() {
+      if (!this.isApiReady()) {
+        return;
       }
       var source = null;
       if ('string' === typeof this.options_.source) {
@@ -172,11 +186,8 @@ var Youtube = (function (_Externals) {
           onError: this.onPlayerError.bind(this)
         }
       });
-    }
-  }, {
-    key: 'isApiReady',
-    value: function isApiReady() {
-      return window['YT'];
+
+      _get(Object.getPrototypeOf(Youtube.prototype), 'initTech', this).call(this);
     }
   }, {
     key: 'setupTriggers',

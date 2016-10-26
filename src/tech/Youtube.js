@@ -107,9 +107,21 @@ class Youtube extends Externals {
     this.updateVolume();
   }
 
+  isApiReady () {
+    return window['YT'] && window['YT']['Player'];
+  }
+
   onYoutubeReady () {
-    for (let i = 0; i < this.apiReadyQueue.length; ++i) {
-      this.apiReadyQueue[i].onYoutubeReady();
+    YT.ready(function () {
+      for (let i = 0; i < Externals.apiReadyQueue.length; ++i) {
+        Externals.apiReadyQueue[i].initTech();
+      }
+    }.bind(this));
+  }
+
+  initTech () {
+    if (!this.isApiReady()) {
+      return;
     }
     let source = null;
     if ('string' === typeof this.options_.source) {
@@ -143,10 +155,7 @@ class Youtube extends Externals {
       }
     });
 
-  }
-
-  isApiReady () {
-    return window['YT'];
+    super.initTech();
   }
 
   setupTriggers () {

@@ -23,9 +23,9 @@ class Soundcloud extends Externals {
   }
 
   injectCss () {
-    let css = `.vjs-${this.className_} > .vjs-poster { background-size:contain; background-position: 0 50%; background-color: transparent; }
-    .vjs-${this.className_} .vjs-tech > .vjs-poster {background-color: rgba(76, 50, 65, 0.35);}
-    .vjs-soundcloud-info{position:absolute;padding:3em 1em 1em 1em;left:60%;top:0;right:0;bottom:0; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}`;
+    let css = `.vjs-${this.className_} > .vjs-poster { display:block; width:50%; background-size:contain; background-position: 0 50%; background-color: transparent; }
+    .vjs-${this.className_} .vjs-tech > .vjs-poster {  display:block; background-color: rgba(76, 50, 65, 0.35);}
+    .vjs-soundcloud-info{position:absolute;padding:3em 1em 1em 1em;left:50%;top:0;right:0;bottom:0; text-align: center; pointer-events: none; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}`;
     super.injectCss(css);
   }
 
@@ -125,8 +125,12 @@ class Soundcloud extends Externals {
     this.updatePoster();
   }
 
-  setupTriggers () {
+  initTech () {
     this.widgetPlayer = SC.Widget(this.options_.techId);
+    super.initTech();
+  }
+
+  setupTriggers () {
     this.widgetPlayer.vjsTech = this;
     for (var i = Soundcloud.Events.length - 1; i >= 0; i--) {
       const eventName = Soundcloud.Events[i];
@@ -181,11 +185,10 @@ class Soundcloud extends Externals {
 
   updatePoster () {
     try {
-      this.widgetPlayer.getSounds((sounds)=> {
-        if (!sounds) {
+      this.widgetPlayer.getCurrentSound((sound)=> {
+        if (!sound) {
           return;
         }
-        const sound = sounds[0];
         this.setPoster(sound['artwork_url'].replace('large.jpg', 't500x500.jpg'));
         this.subPosterImage.update(sound['waveform_url'].replace('wis', 'w1').replace('json', 'png'));
         this.update(sound);

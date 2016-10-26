@@ -38,9 +38,11 @@ class Externals extends Tech {
     }
 
     this.videoId = this.parseSrc(options.source.src);
-
-    this.loadApi();
-    this.injectCss();
+    // Set the vjs-youtube class to the player
+    // Parent is not set yet so we have to wait a tick
+    setTimeout(function () {
+      this.loadApi();
+    }.bind(this));
   }
 
   injectCss (overrideStyle) {
@@ -131,7 +133,7 @@ class Externals extends Tech {
         r = true;
         // Handle memory leak in IE
         js.onload = js.onreadystatechange = null;
-        self.setupTriggers();
+        self.initTech();
       }
     };
 
@@ -141,16 +143,21 @@ class Externals extends Tech {
 
   loadApi () {
     if (!this.isApiReady()) {
+      Externals.apiReadyQueue.push(this);
       this.addScriptTag();
-
+      this.injectCss();
     } else {
       //Add to the queue because the Externals API is not ready
-      this.apiReadyQueue.push(this);
+      this.initTech();
     }
   }
 
   isApiReady () {
     return false;
+  }
+
+  initTech () {
+    this.setupTriggers();
   }
 
   setupTriggers () {
@@ -314,7 +321,7 @@ Externals.prototype.options_ = {
   visibility: 'hidden'
 };
 
-Externals.prototype.apiReadyQueue = [];
+Externals.apiReadyQueue = [];
 
 
 /* Externals Support Testing -------------------------------------------------------- */
