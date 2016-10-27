@@ -8,7 +8,7 @@
   <script src="/dist/videojs-externals.js"></script>
 </head>
 <body>
-<div id="video-container"/>
+<div id="video-container"></div>
 <!--<audio id="vid1"-->
 <!--class="video-js vjs-default-skin"-->
 <!--controls-->
@@ -20,9 +20,9 @@
   var container = document.getElementById('video-container');
   var player;
   function initPlayer () {
-    if (container.firstChild) {
-      container.removeChild(container.firstChild);
-    }
+//    if (container.firstChild) {
+//      container.removeChild(container.firstChild);
+//    }
     if (player) {
       player.dispose();
     }

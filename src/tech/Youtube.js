@@ -92,7 +92,7 @@ class Youtube extends Externals {
 
   parseSrc (src) {
     if (src) {
-      // Regex that parse the video ID for any Dailymotion URL
+      // Regex that parse the video ID for any Youtube URL
       var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var match = src.match(regExp);
 

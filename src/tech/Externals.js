@@ -162,10 +162,8 @@ class Externals extends Tech {
 
   setupTriggers () {
     this.widgetPlayer.vjsTech = this;
-    this.widgetPlayer.listeners = [];
     for (var i = Externals.Events.length - 1; i >= 0; i--) {
       var listener = videojs.bind(this, this.eventHandler);
-      this.widgetPlayer.listeners.push({event: Externals.Events[i], func: listener});
       this.widgetPlayer.addEventListener(Externals.Events[i], listener);
     }
   }
@@ -180,8 +178,37 @@ class Externals extends Tech {
 
   onStateChange (event) {
     let state = event.type;
-    if (state !== this.lastState) {
-      this.lastState = state;
+    this.lastState = state;
+    switch (state) {
+      case -1:
+        this.trigger('loadstart');
+        break;
+
+      case 'apiready':
+        this.trigger('loadedmetadata');
+        this.onReady();
+        this.trigger('durationchange');
+        break;
+
+      case 'ended':
+        break;
+
+      case 'play':
+        this.trigger('playing');
+        break;
+
+      case 'pause':
+        break;
+
+      case 'seeked':
+        break;
+
+      case 'timeupdate':
+        break;
+
+      case 'error':
+        this.onPlayerError();
+        break;
     }
   }
 
@@ -300,8 +327,11 @@ class Externals extends Tech {
   }
 
   dispose () {
+    const isOnMobile = this.isOnMobile();
+    const tagPlayer = videojs(this.options_.playerId);
+    tagPlayer.removeClass('vjs-' + this.className_ + (isOnMobile ? '-mobile' : ''));
     this.resetSrc_(Function.prototype);
-    super.dispose(this);
+    super.dispose();
   }
 
   onPlayerError (e) {
@@ -388,9 +418,9 @@ Externals.prototype['featuresNativeAudioTracks'] = true;
  */
 Externals.prototype['featuresNativeVideoTracks'] = false;
 
-Externals.Events = 'apiready,ad_play,ad_start,ad_timeupdate,ad_pause,ad_end,video_start,' +
-  'video_end,play,playing,pause,ended,canplay,canplaythrough,timeupdate,progress,seeking,' +
-  'seeked,volumechange,durationchange,fullscreenchange,error'.split(',');
+Externals.Events = `apiready,ad_play,ad_start,ad_timeupdate,ad_pause,ad_end,video_start,
+  'video_end,play,playing,pause,ended,canplay,canplaythrough,timeupdate,progress,seeking,
+  'seeked,volumechange,durationchange,fullscreenchange,error`.split(',');
 
 Component.registerComponent('Externals', Externals);
 

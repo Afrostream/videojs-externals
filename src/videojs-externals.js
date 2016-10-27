@@ -4,5 +4,6 @@
  */
 import './tech/Externals';
 import './tech/Youtube';
+import './tech/Vimeo';
 import './tech/Soundcloud';
 import './component/sub-poster-image';
