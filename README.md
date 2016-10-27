@@ -5,7 +5,7 @@
 
 - [x] Youtube
 - [x] Soundcloud
-- [ ] Vimeo
+- [x] Vimeo
 - [ ] Dailymotion
 - [ ] Twitch
 
