@@ -40,7 +40,9 @@
     "YT",
     "Image",
     //SOUNDCLOUD
-    "SC"
+    "SC",
+    //DEEZER
+    "DZ"
   ]
 }
 

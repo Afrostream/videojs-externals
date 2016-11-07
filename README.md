@@ -5,7 +5,9 @@
 
 - [x] Youtube
 - [x] Soundcloud
-- [ ] Vimeo
+- [x] Vimeo
+- [x] Spotify (simple embed)
+- [x] Deezer
 - [ ] Dailymotion
 - [ ] Twitch
 

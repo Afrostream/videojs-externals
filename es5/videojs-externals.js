@@ -8,6 +8,12 @@ require('./tech/Externals');
 
 require('./tech/Youtube');
 
+require('./tech/Deezer');
+
+require('./tech/Spotify');
+
+require('./tech/Vimeo');
+
 require('./tech/Soundcloud');
 
 require('./component/sub-poster-image');

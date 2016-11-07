@@ -3,45 +3,49 @@
 <head data-cast-api-enabled="true">
   <meta charset="utf-8">
   <title>videojs-externals Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
   <link href="/node_modules/video.js/dist/video-js.css" rel="stylesheet">
   <script src="/node_modules/video.js/dist/video.js"></script>
   <script src="/dist/videojs-externals.js"></script>
 </head>
 <body>
-<div id="video-container"></div>
-<!--<audio id="vid1"-->
-<!--class="video-js vjs-default-skin"-->
-<!--controls-->
-<!--autoplay-->
-<!--width="640" height="264"-->
-<!--data-setup='{"autoplay":true, "techOrder": ["soundcloud"], "sources": [{ "type": "audio/soundcloud", "src": "https://soundcloud.com/yozzie-b/rhiana-where-have-u-been-ukg"}] }'>-->
-<!--</audio>-->
+<div id="video-container">
+  <video id="player"
+         class="video-js vjs-fluid vjs-default-skin"
+         controls
+         autoplay>
+  </video>
+</div>
 <script>
   var container = document.getElementById('video-container');
   var player;
+  var self = this;
   function initPlayer () {
-//    if (container.firstChild) {
-//      container.removeChild(container.firstChild);
-//    }
-    if (player) {
-      player.dispose();
-    }
-    var video = document.createElement('video');
-    video.id = 'player';
-    video.className = 'video-js vjs-afrostream-skin';
-    video.crossOrigin = true;
-    video.setAttribute('crossorigin', true);
-    container.appendChild(video);
+    self.createInstance();
+  }
+
+  function createInstance () {
+//    container = document.createElement('div');
+//    container.id = 'video-container';
+//    document.body.appendChild(container);
+//    var video = document.createElement('video');
+//    video.id = 'player';
+//    video.className = 'video-js vjs-afrostream-skin';
+//    video.crossOrigin = true;
+//    video.setAttribute('crossorigin', true);
+//    container.appendChild(video);
 
     player = videojs('player', {
       controls: 1,
       autoplay: 1,
-      techOrder: ['youtube', 'soundcloud'],
-      api: 'https://afr-api-v1-staging.herokuapp.com/api/videos/c1ee3b32-0bf8-4873-b173-09dc055b7bfe/comments',
-      sources: [{"type": "audio/soundcloud", "src": "https://soundcloud.com/yozzie-b/rhiana-where-have-u-been-ukg"}],
-//      sources: [{"type": "video/youtube", "src": "https://www.youtube.com/watch?v=kOkQ4T5WO9E"}],
+      width: 250,
+      techOrder: ['youtube', 'soundcloud', 'vimeo', 'spotify', 'deezer'],
+//      sources: [{"type": "audio/soundcloud", "src": "https://soundcloud.com/yozzie-b/rhiana-where-have-u-been-ukg"}],
+      sources: [{"type": "video/youtube", "src": "https://www.youtube.com/watch?v=kOkQ4T5WO9E"}],
+//      sources: [{"type": "video/vimeo", "src": "https://vimeo.com/153979733"}],
+//      sources: [{"type": "video/spotify", "src": "spotify:track:2zKoA5gp5Xaw3mrp45XIrR"}],
+//      sources: [{"type": "audio/deezer", "src": "http://www.deezer.com/track/1167893"}],
     });
-
   }
 
 

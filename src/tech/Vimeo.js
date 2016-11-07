@@ -34,10 +34,10 @@ class Vimeo extends Externals {
 
     vimeoSource = this.parseSrc(vimeoSource);
 
-    const el_ = super.createEl('div', {
+    const el_ = super.createEl('iframe', {
       id: this.options_.techId,
       style: 'width:100%;height:100%;top:0;left:0;position:absolute',
-      src: `${this.options_.embed}/${vimeoSource}??api=1&player_id=${this.options_.techId}`
+      src: `${this.options_.embed}/${vimeoSource}??api=1&player_id=${this.options_.techId}&fullscreen=1&autoplay=${this.options_.autoplay}`
     });
 
     const tagPlayer = videojs(this.options_.playerId);
@@ -83,8 +83,7 @@ class Vimeo extends Externals {
       color: '#00adef',
       portrait: 0,
       controls: 0,
-      width: this.width(),
-      height: this.height()
+      fullscreen: 1
     });
 
     this.widgetPlayer = new window.Vimeo.Player(this.options_.techId, vimOpts);
@@ -129,7 +128,6 @@ class Vimeo extends Externals {
         this.trigger('timeupdate');
         break;
     }
-    this.updatePaused();
   }
 
   updateVolume () {
