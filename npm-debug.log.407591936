@@ -1,0 +1,28 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'run-script',
+1 verbose cli   'build' ]
+2 info using npm@3.8.8
+3 info using node@v6.0.0
+4 verbose run-script [ 'prebuild', 'build', 'postbuild' ]
+5 info lifecycle videojs-externals@1.0.7~prebuild: videojs-externals@1.0.7
+6 verbose lifecycle videojs-externals@1.0.7~prebuild: unsafe-perm in lifecycle true
+7 verbose lifecycle videojs-externals@1.0.7~prebuild: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/benjipott/Documents/projects/perso/videojs-externals/node_modules/.bin:/usr/local/bin:/usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/benjipott/Documents/projects/perso/videojs-externals/node_modules/.bin:/usr/local/bin:/Library/Frameworks/Python.framework/Versions/3.5/bin:/usr/local/openssl/bin:/usr/local/openssl/bin:/Library/Frameworks/Python.framework/Versions/3.4/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/git/bin:/usr/local/go/bin:/Users/benjipott/.android-sdk-macosx/platform-tools/
+8 verbose lifecycle videojs-externals@1.0.7~prebuild: CWD: /Users/benjipott/Documents/projects/perso/videojs-externals
+9 silly lifecycle videojs-externals@1.0.7~prebuild: Args: [ '-c', 'npm run clean' ]
+10 verbose stack Error: write EPIPE
+10 verbose stack     at exports._errnoException (util.js:896:11)
+10 verbose stack     at WriteWrap.afterWrite (net.js:786:14)
+11 verbose cwd /Users/benjipott/Documents/projects/perso/videojs-externals
+12 error Darwin 16.0.0
+13 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "run-script" "build"
+14 error node v6.0.0
+15 error npm  v3.8.8
+16 error code EPIPE
+17 error errno EPIPE
+18 error syscall write
+19 error write EPIPE
+20 error If you need help, you may report this error at:
+20 error     <https://github.com/npm/npm/issues>
+21 verbose exit [ 1, true ]

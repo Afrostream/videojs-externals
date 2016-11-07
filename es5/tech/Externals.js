@@ -385,20 +385,6 @@ var Externals = (function (_Tech) {
       return true;
     }
   }, {
-    key: 'resetSrc_',
-    value: function resetSrc_(callback) {
-      callback();
-    }
-  }, {
-    key: 'dispose',
-    value: function dispose() {
-      var isOnMobile = this.isOnMobile();
-      var tagPlayer = (0, _videoJs2['default'])(this.options_.playerId);
-      tagPlayer.removeClass('vjs-' + this.className_ + (isOnMobile ? '-mobile' : ''));
-      this.resetSrc_(Function.prototype);
-      _get(Object.getPrototypeOf(Externals.prototype), 'dispose', this).call(this);
-    }
-  }, {
     key: 'onPlayerError',
     value: function onPlayerError(e) {
       this.errorNumber = e.data;

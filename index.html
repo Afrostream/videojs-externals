@@ -10,30 +10,42 @@
 </head>
 <body>
 <div id="video-container">
-  <video id="player"
-         class="video-js vjs-fluid vjs-default-skin"
-         controls
-         autoplay>
-  </video>
+  <!--<video id="player"-->
+  <!--class="video-js vjs-fluid vjs-default-skin"-->
+  <!--controls-->
+  <!--autoplay>-->
+  <!--</video>-->
 </div>
 <script>
   var container = document.getElementById('video-container');
   var player;
   var self = this;
   function initPlayer () {
+    if (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+    if (player) {
+      player.one('dispose', function () {
+        setTimeout(function () {
+          self.createInstance();
+        }, 10)
+      });
+      return player.dispose();
+    }
     self.createInstance();
   }
 
   function createInstance () {
+
 //    container = document.createElement('div');
 //    container.id = 'video-container';
 //    document.body.appendChild(container);
-//    var video = document.createElement('video');
-//    video.id = 'player';
-//    video.className = 'video-js vjs-afrostream-skin';
-//    video.crossOrigin = true;
-//    video.setAttribute('crossorigin', true);
-//    container.appendChild(video);
+    var video = document.createElement('video');
+    video.id = 'player';
+    video.className = 'video-js vjs-afrostream-skin';
+    video.crossOrigin = true;
+    video.setAttribute('crossorigin', true);
+    container.appendChild(video);
 
     player = videojs('player', {
       controls: 1,

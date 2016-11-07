@@ -1,0 +1,27 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'run', 'clean' ]
+2 info using npm@3.8.8
+3 info using node@v6.0.0
+4 verbose run-script [ 'preclean', 'clean', 'postclean' ]
+5 info lifecycle videojs-externals@1.0.7~preclean: videojs-externals@1.0.7
+6 silly lifecycle videojs-externals@1.0.7~preclean: no script for preclean, continuing
+7 info lifecycle videojs-externals@1.0.7~clean: videojs-externals@1.0.7
+8 verbose lifecycle videojs-externals@1.0.7~clean: unsafe-perm in lifecycle true
+9 verbose lifecycle videojs-externals@1.0.7~clean: PATH: /usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/benjipott/Documents/projects/perso/videojs-externals/node_modules/.bin:/usr/local/bin:/usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/benjipott/Documents/projects/perso/videojs-externals/node_modules/.bin:/usr/local/bin:/usr/local/lib/node_modules/npm/bin/node-gyp-bin:/Users/benjipott/Documents/projects/perso/videojs-externals/node_modules/.bin:/usr/local/bin:/Library/Frameworks/Python.framework/Versions/3.5/bin:/usr/local/openssl/bin:/usr/local/openssl/bin:/Library/Frameworks/Python.framework/Versions/3.4/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/git/bin:/usr/local/go/bin:/Users/benjipott/.android-sdk-macosx/platform-tools/
+10 verbose lifecycle videojs-externals@1.0.7~clean: CWD: /Users/benjipott/Documents/projects/perso/videojs-externals
+11 silly lifecycle videojs-externals@1.0.7~clean: Args: [ '-c', 'rm -rf dist dist-test es5' ]
+12 verbose stack Error: write EPIPE
+12 verbose stack     at exports._errnoException (util.js:896:11)
+12 verbose stack     at WriteWrap.afterWrite (net.js:786:14)
+13 verbose cwd /Users/benjipott/Documents/projects/perso/videojs-externals
+14 error Darwin 16.0.0
+15 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "run" "clean"
+16 error node v6.0.0
+17 error npm  v3.8.8
+18 error code EPIPE
+19 error errno EPIPE
+20 error syscall write
+21 error write EPIPE
+22 error If you need help, you may report this error at:
+22 error     <https://github.com/npm/npm/issues>
+23 verbose exit [ 1, true ]

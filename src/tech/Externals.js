@@ -335,19 +335,6 @@ class Externals extends Tech {
     return true;
   }
 
-
-  resetSrc_ (callback) {
-    callback();
-  }
-
-  dispose () {
-    const isOnMobile = this.isOnMobile();
-    const tagPlayer = videojs(this.options_.playerId);
-    tagPlayer.removeClass('vjs-' + this.className_ + (isOnMobile ? '-mobile' : ''));
-    this.resetSrc_(Function.prototype);
-    super.dispose();
-  }
-
   onPlayerError (e) {
     this.errorNumber = e.data;
     this.trigger('error');
