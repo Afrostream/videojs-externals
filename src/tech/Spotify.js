@@ -55,7 +55,7 @@ class Spotify extends Externals {
 
 
   parseSrc (src) {
-    return src
+    return src;
   }
 
   setupTriggers () {

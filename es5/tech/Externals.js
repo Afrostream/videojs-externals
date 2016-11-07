@@ -23,7 +23,7 @@ var _videoJs = require('video.js');
 var _videoJs2 = _interopRequireDefault(_videoJs);
 
 var Component = _videoJs2['default'].getComponent('Component');
-var ClickableComponent = _videoJs2['default'].getComponent('ClickableComponent');
+//const ClickableComponent = videojs.getComponent('ClickableComponent');
 var Tech = _videoJs2['default'].getComponent('Tech');
 
 /**
@@ -145,7 +145,11 @@ var Externals = (function (_Tech) {
   }, {
     key: 'togglePlayPause',
     value: function togglePlayPause() {
-      this.paused() ? this.play() : this.pause();
+      if (this.paused()) {
+        this.play();
+      } else {
+        this.pause();
+      }
     }
   }, {
     key: 'isOnMobile',

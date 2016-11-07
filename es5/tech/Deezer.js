@@ -69,7 +69,7 @@ var Deezer = (function (_Externals) {
       var el_ = _get(Object.getPrototypeOf(Deezer.prototype), 'createEl', this).call(this, 'div', {
         width: '100%',
         height: '100%',
-        src: '//www.deezer.com/plugins/player?type=tracks&id=' + source + '&format=classic&color=007FEB&autoplay=' + this.options_.autoplay + '&playlist=' + this.options_.playList + '&width=100%&height=100%'
+        src: '//www.deezer.com/plugins/player?type=tracks&id=' + source + '\n      &format=classic&color=007FEB&autoplay=' + this.options_.autoplay + '\n      &playlist=' + this.options_.playList + '&width=100%&height=100%'
       });
 
       this.infosEl_ = _videoJs2['default'].createEl('div', {
@@ -240,7 +240,7 @@ var Deezer = (function (_Externals) {
         track.id = this.parseSrc(track.id);
 
         DZ.api('/track/' + track.id, function (response) {
-          _this2.setPoster('' + response.album.cover_big);
+          _this2.setPoster('' + response.album['cover_big']);
           _this2.update(response);
         });
       } catch (e) {

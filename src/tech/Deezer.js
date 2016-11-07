@@ -45,7 +45,9 @@ class Deezer extends Externals {
     const el_ = super.createEl('div', {
       width: '100%',
       height: '100%',
-      src: `//www.deezer.com/plugins/player?type=tracks&id=${source}&format=classic&color=007FEB&autoplay=${this.options_.autoplay}&playlist=${this.options_.playList}&width=100%&height=100%`
+      src: `//www.deezer.com/plugins/player?type=tracks&id=${source}
+      &format=classic&color=007FEB&autoplay=${this.options_.autoplay}
+      &playlist=${this.options_.playList}&width=100%&height=100%`
     });
 
     this.infosEl_ = videojs.createEl('div', {
@@ -200,7 +202,7 @@ class Deezer extends Externals {
       track.id = this.parseSrc(track.id);
 
       DZ.api('/track/' + track.id, (response) => {
-        this.setPoster(`${response.album.cover_big}`);
+        this.setPoster(`${response.album['cover_big']}`);
         this.update(response);
       });
     } catch (e) {

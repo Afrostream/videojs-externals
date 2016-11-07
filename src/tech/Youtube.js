@@ -4,7 +4,7 @@
  */
 import videojs from 'video.js';
 import Externals from './Externals';
-import window from 'global/window'
+import window from 'global/window';
 
 const Component = videojs.getComponent('Component');
 const Tech = videojs.getComponent('Tech');

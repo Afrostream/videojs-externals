@@ -5,7 +5,7 @@
 import videojs from 'video.js';
 
 const Component = videojs.getComponent('Component');
-const ClickableComponent = videojs.getComponent('ClickableComponent');
+//const ClickableComponent = videojs.getComponent('ClickableComponent');
 const Tech = videojs.getComponent('Tech');
 
 /**
@@ -122,7 +122,11 @@ class Externals extends Tech {
   }
 
   togglePlayPause () {
-    this.paused() ? this.play() : this.pause();
+    if (this.paused()) {
+      this.play();
+    } else {
+      this.pause();
+    }
   }
 
   isOnMobile () {
