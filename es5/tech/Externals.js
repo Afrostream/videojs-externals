@@ -23,6 +23,7 @@ var _videoJs = require('video.js');
 var _videoJs2 = _interopRequireDefault(_videoJs);
 
 var Component = _videoJs2['default'].getComponent('Component');
+var ClickableComponent = _videoJs2['default'].getComponent('ClickableComponent');
 var Tech = _videoJs2['default'].getComponent('Tech');
 
 /**
@@ -97,7 +98,7 @@ var Externals = (function (_Tech) {
     }
   }, {
     key: 'createEl',
-    value: function createEl(type, options) {
+    value: function createEl(type, options, blocker) {
 
       var el = _videoJs2['default'].createEl('div', {
         id: 'vjs-tech' + this.options_.techId,
@@ -117,16 +118,21 @@ var Externals = (function (_Tech) {
 
       el.appendChild(iframeContainer);
       var isOnMobile = this.isOnMobile();
-      if (!isOnMobile) {
+      if (!isOnMobile && blocker !== false || blocker) {
+        //let divBlocker = ClickableComponent.create();
+        //let divBlocker = this.addChild('clickableComponent');
+        //divBlocker.onClick = ()=> {
+        //  this.togglePlayPause();
+        //}
         var divBlocker = _videoJs2['default'].createEl('div', {
           className: 'vjs-iframe-blocker',
           style: 'position:absolute;top:0;left:0;width:100%;height:100%'
         });
 
         // In case the blocker is still there and we want to pause
-        divBlocker.onclick = (function () {
-          this.pause();
-        }).bind(this);
+        _videoJs2['default'].on(divBlocker, 'click', _videoJs2['default'].bind(this, this.togglePlayPause));
+        _videoJs2['default'].on(divBlocker, 'tap', _videoJs2['default'].bind(this, this.togglePlayPause));
+        _videoJs2['default'].on(divBlocker, 'touchend', _videoJs2['default'].bind(this, this.togglePlayPause));
 
         el.appendChild(divBlocker);
       }
@@ -135,6 +141,11 @@ var Externals = (function (_Tech) {
       tagPlayer.addClass('vjs-' + this.className_ + (isOnMobile ? '-mobile' : ''));
 
       return el;
+    }
+  }, {
+    key: 'togglePlayPause',
+    value: function togglePlayPause() {
+      this.paused() ? this.play() : this.pause();
     }
   }, {
     key: 'isOnMobile',
@@ -190,10 +201,8 @@ var Externals = (function (_Tech) {
     key: 'setupTriggers',
     value: function setupTriggers() {
       this.widgetPlayer.vjsTech = this;
-      this.widgetPlayer.listeners = [];
       for (var i = Externals.Events.length - 1; i >= 0; i--) {
         var listener = _videoJs2['default'].bind(this, this.eventHandler);
-        this.widgetPlayer.listeners.push({ event: Externals.Events[i], func: listener });
         this.widgetPlayer.addEventListener(Externals.Events[i], listener);
       }
     }
@@ -210,8 +219,37 @@ var Externals = (function (_Tech) {
     key: 'onStateChange',
     value: function onStateChange(event) {
       var state = event.type;
-      if (state !== this.lastState) {
-        this.lastState = state;
+      this.lastState = state;
+      switch (state) {
+        case -1:
+          this.trigger('loadstart');
+          break;
+
+        case 'apiready':
+          this.trigger('loadedmetadata');
+          this.onReady();
+          this.trigger('durationchange');
+          break;
+
+        case 'ended':
+          break;
+
+        case 'play':
+          this.trigger('playing');
+          break;
+
+        case 'pause':
+          break;
+
+        case 'seeked':
+          break;
+
+        case 'timeupdate':
+          break;
+
+        case 'error':
+          this.onPlayerError();
+          break;
       }
     }
   }, {
@@ -350,8 +388,11 @@ var Externals = (function (_Tech) {
   }, {
     key: 'dispose',
     value: function dispose() {
+      var isOnMobile = this.isOnMobile();
+      var tagPlayer = (0, _videoJs2['default'])(this.options_.playerId);
+      tagPlayer.removeClass('vjs-' + this.className_ + (isOnMobile ? '-mobile' : ''));
       this.resetSrc_(Function.prototype);
-      _get(Object.getPrototypeOf(Externals.prototype), 'dispose', this).call(this, this);
+      _get(Object.getPrototypeOf(Externals.prototype), 'dispose', this).call(this);
     }
   }, {
     key: 'onPlayerError',
@@ -370,6 +411,7 @@ var Externals = (function (_Tech) {
 })(Tech);
 
 Externals.prototype.className_ = ' vjs-externals';
+Externals.prototype.widgetPlayer = {};
 
 Externals.prototype.options_ = {
   visibility: 'hidden'
@@ -441,7 +483,7 @@ Externals.prototype['featuresNativeAudioTracks'] = true;
  */
 Externals.prototype['featuresNativeVideoTracks'] = false;
 
-Externals.Events = 'apiready,ad_play,ad_start,ad_timeupdate,ad_pause,ad_end,video_start,' + 'video_end,play,playing,pause,ended,canplay,canplaythrough,timeupdate,progress,seeking,' + 'seeked,volumechange,durationchange,fullscreenchange,error'.split(',');
+Externals.Events = 'apiready,ad_play,ad_start,ad_timeupdate,ad_pause,ad_end,video_start,\n  \'video_end,play,playing,pause,ended,canplay,canplaythrough,timeupdate,progress,seeking,\n  \'seeked,volumechange,durationchange,fullscreenchange,error'.split(',');
 
 Component.registerComponent('Externals', Externals);
 

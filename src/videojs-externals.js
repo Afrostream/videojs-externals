@@ -4,6 +4,8 @@
  */
 import './tech/Externals';
 import './tech/Youtube';
+import './tech/Deezer';
+import './tech/Spotify';
 import './tech/Vimeo';
 import './tech/Soundcloud';
 import './component/sub-poster-image';

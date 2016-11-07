@@ -4,6 +4,7 @@
  */
 import videojs from 'video.js';
 import Externals from './Externals';
+import window from 'global/window'
 
 const Component = videojs.getComponent('Component');
 const Tech = videojs.getComponent('Tech');
@@ -23,20 +24,10 @@ class Youtube extends Externals {
   }
 
   createEl () {
-    let youtubeSource = null;
-    if ('string' === typeof this.options_.source) {
-      youtubeSource = this.options_.source;
-    }
-    else if ('object' === typeof this.options_.source) {
-      youtubeSource = this.options_.source.src;
-    }
-
-    youtubeSource = this.parseSrc(youtubeSource);
 
     const el_ = super.createEl('div', {
       id: this.options_.techId,
-      style: 'width:100%;height:100%;top:0;left:0;position:absolute',
-      src: `http://www.youtube.com/embed/${youtubeSource}?enablejsapi=1&origin=http://127.0.0.1:9999`
+      style: 'width:100%;height:100%;top:0;left:0;position:absolute'
     });
 
     el_.style.visibility = this.options_.visibility;
@@ -135,12 +126,13 @@ class Youtube extends Externals {
 
     const ytOpts = videojs.mergeOptions(this.options_, {
       controls: 0,
-      modestbranding: 1,
+      playsinline: 1,
       rel: 0,
       showinfo: 0,
       autohide: 1,
       disablekb: 1,
       end: 0,
+      modestbranding: 1,
       fs: 1
     });
 
@@ -176,7 +168,7 @@ class Youtube extends Externals {
     if (!this.options_.poster) {
       if (this.url) {
         // Set the low resolution first
-        this.setPoster('https://img.youtube.com/vi/' + this.url + '/0.jpg');
+        this.setPoster('//img.youtube.com/vi/' + this.url + '/0.jpg');
 
       }
     }

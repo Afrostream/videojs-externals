@@ -26,6 +26,10 @@ var _Externals2 = require('./Externals');
 
 var _Externals3 = _interopRequireDefault(_Externals2);
 
+var _globalWindow = require('global/window');
+
+var _globalWindow2 = _interopRequireDefault(_globalWindow);
+
 var Component = _videoJs2['default'].getComponent('Component');
 var Tech = _videoJs2['default'].getComponent('Tech');
 
@@ -50,19 +54,10 @@ var Youtube = (function (_Externals) {
   _createClass(Youtube, [{
     key: 'createEl',
     value: function createEl() {
-      var youtubeSource = null;
-      if ('string' === typeof this.options_.source) {
-        youtubeSource = this.options_.source;
-      } else if ('object' === typeof this.options_.source) {
-        youtubeSource = this.options_.source.src;
-      }
-
-      youtubeSource = this.parseSrc(youtubeSource);
 
       var el_ = _get(Object.getPrototypeOf(Youtube.prototype), 'createEl', this).call(this, 'div', {
         id: this.options_.techId,
-        style: 'width:100%;height:100%;top:0;left:0;position:absolute',
-        src: 'http://www.youtube.com/embed/' + youtubeSource + '?enablejsapi=1&origin=http://127.0.0.1:9999'
+        style: 'width:100%;height:100%;top:0;left:0;position:absolute'
       });
 
       el_.style.visibility = this.options_.visibility;
@@ -73,7 +68,7 @@ var Youtube = (function (_Externals) {
     key: 'loadApi',
     value: function loadApi() {
       _get(Object.getPrototypeOf(Youtube.prototype), 'loadApi', this).call(this);
-      window.onYouTubeIframeAPIReady = this.onYoutubeReady.bind(this);
+      _globalWindow2['default'].onYouTubeIframeAPIReady = this.onYoutubeReady.bind(this);
     }
   }, {
     key: 'onStateChange',
@@ -121,7 +116,7 @@ var Youtube = (function (_Externals) {
     key: 'parseSrc',
     value: function parseSrc(src) {
       if (src) {
-        // Regex that parse the video ID for any Dailymotion URL
+        // Regex that parse the video ID for any Youtube URL
         var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         var match = src.match(regExp);
 
@@ -139,7 +134,7 @@ var Youtube = (function (_Externals) {
   }, {
     key: 'isApiReady',
     value: function isApiReady() {
-      return window['YT'] && window['YT']['Player'];
+      return _globalWindow2['default']['YT'] && _globalWindow2['default']['YT']['Player'];
     }
   }, {
     key: 'onYoutubeReady',
@@ -167,12 +162,13 @@ var Youtube = (function (_Externals) {
 
       var ytOpts = _videoJs2['default'].mergeOptions(this.options_, {
         controls: 0,
-        modestbranding: 1,
+        playsinline: 1,
         rel: 0,
         showinfo: 0,
         autohide: 1,
         disablekb: 1,
         end: 0,
+        modestbranding: 1,
         fs: 1
       });
 
@@ -208,7 +204,7 @@ var Youtube = (function (_Externals) {
       if (!this.options_.poster) {
         if (this.url) {
           // Set the low resolution first
-          this.setPoster('https://img.youtube.com/vi/' + this.url + '/0.jpg');
+          this.setPoster('//img.youtube.com/vi/' + this.url + '/0.jpg');
         }
       }
     }

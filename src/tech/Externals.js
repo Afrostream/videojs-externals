@@ -5,6 +5,7 @@
 import videojs from 'video.js';
 
 const Component = videojs.getComponent('Component');
+const ClickableComponent = videojs.getComponent('ClickableComponent');
 const Tech = videojs.getComponent('Tech');
 
 /**
@@ -74,7 +75,7 @@ class Externals extends Tech {
     return src;
   }
 
-  createEl (type, options) {
+  createEl (type, options, blocker) {
 
     let el = videojs.createEl('div', {
       id: 'vjs-tech' + this.options_.techId,
@@ -94,7 +95,12 @@ class Externals extends Tech {
 
     el.appendChild(iframeContainer);
     const isOnMobile = this.isOnMobile();
-    if (!isOnMobile) {
+    if ((!isOnMobile && blocker !== false) || blocker) {
+      //let divBlocker = ClickableComponent.create();
+      //let divBlocker = this.addChild('clickableComponent');
+      //divBlocker.onClick = ()=> {
+      //  this.togglePlayPause();
+      //}
       let divBlocker = videojs.createEl('div',
         {
           className: 'vjs-iframe-blocker',
@@ -102,9 +108,9 @@ class Externals extends Tech {
         });
 
       // In case the blocker is still there and we want to pause
-      divBlocker.onclick = function () {
-        this.pause();
-      }.bind(this);
+      videojs.on(divBlocker, 'click', videojs.bind(this, this.togglePlayPause));
+      videojs.on(divBlocker, 'tap', videojs.bind(this, this.togglePlayPause));
+      videojs.on(divBlocker, 'touchend', videojs.bind(this, this.togglePlayPause));
 
       el.appendChild(divBlocker);
     }
@@ -113,6 +119,10 @@ class Externals extends Tech {
     tagPlayer.addClass('vjs-' + this.className_ + (isOnMobile ? '-mobile' : ''));
 
     return el;
+  }
+
+  togglePlayPause () {
+    this.paused() ? this.play() : this.pause();
   }
 
   isOnMobile () {
@@ -346,6 +356,7 @@ class Externals extends Tech {
 
 
 Externals.prototype.className_ = ' vjs-externals';
+Externals.prototype.widgetPlayer = {};
 
 Externals.prototype.options_ = {
   visibility: 'hidden'
