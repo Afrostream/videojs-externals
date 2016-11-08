@@ -260,7 +260,7 @@ var Soundcloud = (function (_Externals) {
     key: 'src',
     value: function src(_src) {
       this.widgetPlayer.load(_src, {
-        auto_play: this.options_.autoplay
+        'auto_play': this.options_.autoplay
       }, this.onReady.bind(this));
     }
   }, {
