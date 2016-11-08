@@ -35,6 +35,11 @@ class Youtube extends Externals {
     return el_;
   }
 
+  injectCss () {
+    let css = `.vjs-${this.className_} .vjs-big-play-button { display: none; }`;
+    super.injectCss(css);
+  }
+
   loadApi () {
     super.loadApi();
     window.onYouTubeIframeAPIReady = this.onYoutubeReady.bind(this);

@@ -50,8 +50,7 @@ class Externals extends Tech {
     let css = // iframe blocker to catch mouse events
       `.vjs-${this.className_} .vjs-iframe-blocker { display: none; }
       .vjs-${this.className_}.vjs-user-inactive .vjs-iframe-blocker { display: block; }
-      .vjs-${this.className_} .vjs-poster { background-size: cover; }
-      .vjs-${this.className_}-mobile .vjs-big-play-button { display: none; }`;
+      .vjs-${this.className_} .vjs-poster { background-size: cover; }`;
 
     if (overrideStyle) {
       css += overrideStyle;
@@ -116,7 +115,11 @@ class Externals extends Tech {
     }
 
     const tagPlayer = videojs(this.options_.playerId);
-    tagPlayer.addClass('vjs-' + this.className_ + (isOnMobile ? '-mobile' : ''));
+
+    tagPlayer.addClass(`vjs-${this.className_}`);
+    if (isOnMobile) {
+      tagPlayer.addClass(`vjs-${this.className_}-mobile`);
+    }
 
     return el;
   }

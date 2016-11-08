@@ -65,6 +65,12 @@ var Youtube = (function (_Externals) {
       return el_;
     }
   }, {
+    key: 'injectCss',
+    value: function injectCss() {
+      var css = '.vjs-' + this.className_ + ' .vjs-big-play-button { display: none; }';
+      _get(Object.getPrototypeOf(Youtube.prototype), 'injectCss', this).call(this, css);
+    }
+  }, {
     key: 'loadApi',
     value: function loadApi() {
       _get(Object.getPrototypeOf(Youtube.prototype), 'loadApi', this).call(this);

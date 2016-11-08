@@ -72,7 +72,7 @@ var Externals = (function (_Tech) {
     key: 'injectCss',
     value: function injectCss(overrideStyle) {
       var css = // iframe blocker to catch mouse events
-      '.vjs-' + this.className_ + ' .vjs-iframe-blocker { display: none; }\n      .vjs-' + this.className_ + '.vjs-user-inactive .vjs-iframe-blocker { display: block; }\n      .vjs-' + this.className_ + ' .vjs-poster { background-size: cover; }\n      .vjs-' + this.className_ + '-mobile .vjs-big-play-button { display: none; }';
+      '.vjs-' + this.className_ + ' .vjs-iframe-blocker { display: none; }\n      .vjs-' + this.className_ + '.vjs-user-inactive .vjs-iframe-blocker { display: block; }\n      .vjs-' + this.className_ + ' .vjs-poster { background-size: cover; }';
 
       if (overrideStyle) {
         css += overrideStyle;
@@ -138,7 +138,11 @@ var Externals = (function (_Tech) {
       }
 
       var tagPlayer = (0, _videoJs2['default'])(this.options_.playerId);
-      tagPlayer.addClass('vjs-' + this.className_ + (isOnMobile ? '-mobile' : ''));
+
+      tagPlayer.addClass('vjs-' + this.className_);
+      if (isOnMobile) {
+        tagPlayer.addClass('vjs-' + this.className_ + '-mobile');
+      }
 
       return el;
     }
