@@ -25,7 +25,7 @@ class Soundcloud extends Externals {
   injectCss () {
     let css = `.vjs-${this.className_} > .vjs-poster { display:block; width:50%; background-size:contain; background-position: 0 50%; }
     .vjs-${this.className_} .vjs-tech > .vjs-poster {  display:block; background-color: rgba(76, 50, 65, 0.35);}
-    .vjs-has-started .vjs-poster {display:block;}
+    .vjs-${this.className_}.vjs-has-started .vjs-poster {display:block;}
     .vjs-soundcloud-info{position:absolute;display: flex;justify-content: center;align-items: center;left:50%;top:0;right:0;bottom:0;
       text-align: center; pointer-events: none; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}`;
     super.injectCss(css);
