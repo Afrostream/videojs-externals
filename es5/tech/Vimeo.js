@@ -62,7 +62,6 @@ var Vimeo = (function (_Externals) {
 
       var el_ = _get(Object.getPrototypeOf(Vimeo.prototype), 'createEl', this).call(this, 'iframe', {
         id: this.options_.techId,
-        style: 'width:100%;height:100%;top:0;left:0;position:absolute',
         src: this.options_.embed + '/' + vimeoSource + '??api=1&player_id=' + this.options_.techId + '&fullscreen=1&autoplay=' + this.options_.autoplay
       });
 
@@ -155,6 +154,11 @@ var Vimeo = (function (_Externals) {
         this.buffered_ = event.percent;
       }
       switch (state) {
+        case 'loaded':
+          this.trigger('loadedmetadata');
+          this.trigger('durationchange');
+          this.trigger('canplay');
+          break;
         case 'onLoadProgress':
           this.trigger('progress');
           this.trigger('durationchange');

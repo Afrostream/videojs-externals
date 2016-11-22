@@ -116,14 +116,16 @@ var Externals = (function (_Tech) {
         allowFullScreen: ''
       }, options));
 
+      iframeContainer.style.visibility = this.options_.visibility;
+      iframeContainer.style.width = '100%';
+      iframeContainer.style.height = '100%';
+      iframeContainer.style.top = '0';
+      iframeContainer.style.left = '0';
+      iframeContainer.style.position = 'absolute';
+
       el.appendChild(iframeContainer);
       var isOnMobile = this.isOnMobile();
       if (!isOnMobile && blocker !== false || blocker) {
-        //let divBlocker = ClickableComponent.create();
-        //let divBlocker = this.addChild('clickableComponent');
-        //divBlocker.onClick = ()=> {
-        //  this.togglePlayPause();
-        //}
         var divBlocker = _videoJs2['default'].createEl('div', {
           className: 'vjs-iframe-blocker',
           style: 'position:absolute;top:0;left:0;width:100%;height:100%'
@@ -231,6 +233,7 @@ var Externals = (function (_Tech) {
       switch (state) {
         case -1:
           this.trigger('loadstart');
+          this.trigger('waiting');
           break;
 
         case 'apiready':

@@ -92,14 +92,16 @@ class Externals extends Tech {
       allowFullScreen: '',
     }, options));
 
+    iframeContainer.style.visibility = this.options_.visibility;
+    iframeContainer.style.width = '100%';
+    iframeContainer.style.height = '100%';
+    iframeContainer.style.top = '0';
+    iframeContainer.style.left = '0';
+    iframeContainer.style.position = 'absolute';
+
     el.appendChild(iframeContainer);
     const isOnMobile = this.isOnMobile();
     if ((!isOnMobile && blocker !== false) || blocker) {
-      //let divBlocker = ClickableComponent.create();
-      //let divBlocker = this.addChild('clickableComponent');
-      //divBlocker.onClick = ()=> {
-      //  this.togglePlayPause();
-      //}
       let divBlocker = videojs.createEl('div',
         {
           className: 'vjs-iframe-blocker',
@@ -199,6 +201,7 @@ class Externals extends Tech {
     switch (state) {
       case -1:
         this.trigger('loadstart');
+        this.trigger('waiting');
         break;
 
       case 'apiready':

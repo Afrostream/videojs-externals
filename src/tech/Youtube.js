@@ -27,10 +27,7 @@ class Youtube extends Externals {
 
     const el_ = super.createEl('div', {
       id: this.options_.techId,
-      style: 'width:100%;height:100%;top:0;left:0;position:absolute'
     });
-
-    el_.style.visibility = this.options_.visibility;
 
     return el_;
   }
@@ -79,8 +76,8 @@ class Youtube extends Externals {
         break;
 
       case YT.PlayerState.BUFFERING:
-        this.player_.trigger('timeupdate');
-        this.player_.trigger('waiting');
+        this.trigger('timeupdate');
+        this.trigger('waiting');
         break;
     }
     this.lastState = state;

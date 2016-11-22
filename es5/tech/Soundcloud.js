@@ -50,7 +50,7 @@ var Soundcloud = (function (_Externals) {
   _createClass(Soundcloud, [{
     key: 'injectCss',
     value: function injectCss() {
-      var css = '.vjs-' + this.className_ + ' > .vjs-poster { display:block; width:50%; background-size:contain; background-position: 0 50%; }\n    .vjs-' + this.className_ + ' .vjs-tech > .vjs-poster {  display:block; background-color: rgba(76, 50, 65, 0.35);}\n    .vjs-' + this.className_ + '.vjs-has-started .vjs-poster {display:block;}\n    .vjs-soundcloud-info{position:absolute;display: flex;justify-content: center;align-items: center;left:50%;top:0;right:0;bottom:0;\n      text-align: center; pointer-events: none; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}';
+      var css = '.vjs-' + this.className_ + ' > .vjs-poster { display:block; width:50%; }\n    .vjs-' + this.className_ + ' .vjs-tech { }\n    .vjs-' + this.className_ + ' .vjs-tech > .vjs-poster {  display:block; }\n    .vjs-' + this.className_ + '.vjs-has-started .vjs-poster {display:block;}\n    .vjs-soundcloud-info{position:absolute;display: flex;justify-content: center;align-items: center;left:50%;top:0;right:0;bottom:0;\n      text-align: center; pointer-events: none; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.69);}';
       _get(Object.getPrototypeOf(Soundcloud.prototype), 'injectCss', this).call(this, css);
     }
   }, {
@@ -90,12 +90,13 @@ var Soundcloud = (function (_Externals) {
       switch (state) {
         case -1:
           this.trigger('loadstart');
-          this.trigger('loadedmetadata');
-          this.trigger('durationchange');
+          this.trigger('waiting');
           break;
 
         case SC.Widget.Events.READY:
-          this.updatePause();
+          this.trigger('loadedmetadata');
+          this.trigger('durationchange');
+          this.trigger('canplay');
           this.onReady();
           break;
 
@@ -107,9 +108,11 @@ var Soundcloud = (function (_Externals) {
         case SC.Widget.Events.PLAY:
           this.updatePause();
           this.trigger('play');
+          this.trigger('waiting');
           break;
 
         case SC.Widget.Events.PLAY_PROGRESS:
+          this.trigger('canplay');
           this.trigger('playing');
           this.currentTime_ = this.duration_ * 1000 * event.relativePosition / 1000;
           //this.trigger('timeupdate');
@@ -148,6 +151,7 @@ var Soundcloud = (function (_Externals) {
     key: 'onReady',
     value: function onReady() {
       _get(Object.getPrototypeOf(Soundcloud.prototype), 'onReady', this).call(this);
+      this.updatePause();
       this.updateDuration();
       this.updateVolume();
       this.updatePoster();
@@ -157,6 +161,7 @@ var Soundcloud = (function (_Externals) {
     value: function initTech() {
       this.widgetPlayer = SC.Widget(this.options_.techId);
       _get(Object.getPrototypeOf(Soundcloud.prototype), 'initTech', this).call(this);
+      this.onStateChange({ type: -1 });
     }
   }, {
     key: 'setupTriggers',
@@ -261,7 +266,7 @@ var Soundcloud = (function (_Externals) {
     value: function src(_src) {
       this.widgetPlayer.load(_src, {
         'auto_play': this.options_.autoplay
-      }, this.onReady.bind(this));
+      });
     }
   }, {
     key: 'duration',

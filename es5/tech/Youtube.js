@@ -56,11 +56,8 @@ var Youtube = (function (_Externals) {
     value: function createEl() {
 
       var el_ = _get(Object.getPrototypeOf(Youtube.prototype), 'createEl', this).call(this, 'div', {
-        id: this.options_.techId,
-        style: 'width:100%;height:100%;top:0;left:0;position:absolute'
+        id: this.options_.techId
       });
-
-      el_.style.visibility = this.options_.visibility;
 
       return el_;
     }
@@ -112,8 +109,8 @@ var Youtube = (function (_Externals) {
           break;
 
         case YT.PlayerState.BUFFERING:
-          this.player_.trigger('timeupdate');
-          this.player_.trigger('waiting');
+          this.trigger('timeupdate');
+          this.trigger('waiting');
           break;
       }
       this.lastState = state;

@@ -76,10 +76,13 @@ class Deezer extends Externals {
         this.trigger('loadstart');
         this.trigger('loadedmetadata');
         this.trigger('durationchange');
+        this.trigger('waiting');
         break;
 
       case 'player_loaded':
-        this.onReady();
+        this.trigger('loadedmetadata');
+        this.trigger('durationchange');
+        this.trigger('canplay');
         this.updatePause();
         break;
 
