@@ -135,7 +135,6 @@ class Soundcloud extends Externals {
   initTech () {
     this.widgetPlayer = SC.Widget(this.options_.techId);
     super.initTech();
-    this.onStateChange({type: -1});
   }
 
   setupTriggers () {
@@ -172,20 +171,20 @@ class Soundcloud extends Externals {
   }
 
   updatePause () {
-    this.widgetPlayer.isPaused((paused)=> {
+    this.widgetPlayer.isPaused((paused) => {
       this.paused_ = paused;
     });
   }
 
   updateDuration () {
-    this.widgetPlayer.getDuration((duration)=> {
+    this.widgetPlayer.getDuration((duration) => {
       this.duration_ = duration / 1000;
       this.trigger('durationchange');
     });
   }
 
   updateVolume () {
-    this.widgetPlayer.getVolume((volume)=> {
+    this.widgetPlayer.getVolume((volume) => {
       this.volume_ = volume;
       this.trigger('volumechange');
     });
@@ -193,7 +192,7 @@ class Soundcloud extends Externals {
 
   updatePoster () {
     try {
-      this.widgetPlayer.getCurrentSound((sound)=> {
+      this.widgetPlayer.getCurrentSound((sound) => {
         if (!sound) {
           return;
         }

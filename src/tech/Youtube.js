@@ -48,7 +48,6 @@ class Youtube extends Externals {
       case -1:
         this.trigger('loadstart');
         this.trigger('loadedmetadata');
-        this.trigger('durationchange');
         break;
 
       case YT.PlayerState.PLAYING:
@@ -148,7 +147,6 @@ class Youtube extends Externals {
         onError: this.onPlayerError.bind(this)
       }
     });
-
     super.initTech();
   }
 

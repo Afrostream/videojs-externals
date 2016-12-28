@@ -74,8 +74,6 @@ class Deezer extends Externals {
     switch (state) {
       case -1:
         this.trigger('loadstart');
-        this.trigger('loadedmetadata');
-        this.trigger('durationchange');
         this.trigger('waiting');
         break;
 
@@ -142,7 +140,6 @@ class Deezer extends Externals {
     });
     this.widgetPlayer = DZ.player;
     super.initTech();
-    this.onStateChange({type: -1});
   }
 
   setupTriggers () {

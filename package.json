@@ -1,7 +1,7 @@
 {
   "name": "videojs-externals",
   "description": "Externals playback technology for Video.js",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "author": "Benjamin Pott",
   "main": "es5/videojs-externals.js",
   "license": "MIT",

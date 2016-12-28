@@ -177,6 +177,7 @@ class Externals extends Tech {
 
   initTech () {
     this.setupTriggers();
+    this.onStateChange({data: -1, type: -1});
   }
 
   setupTriggers () {
@@ -206,8 +207,9 @@ class Externals extends Tech {
 
       case 'apiready':
         this.trigger('loadedmetadata');
-        this.onReady();
+        this.trigger('canplay');
         this.trigger('durationchange');
+        this.onReady();
         break;
 
       case 'ended':

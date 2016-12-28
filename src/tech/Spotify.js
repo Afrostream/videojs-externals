@@ -34,6 +34,7 @@ class Spotify extends Externals {
     const el_ = super.createEl('iframe', {
       width: '100%',
       height: '100%',
+      onload: () => this.onStateChange({type: 'apiready'}),
       src: `https://embed.spotify.com/?uri=${source}`
     }, false);
 
@@ -89,7 +90,9 @@ class Spotify extends Externals {
   }
 
   src (src) {
-    this.el_.src(src);
+    if (typeof src !== 'undefined') {
+      this.el_.src(src);
+    }
   }
 
 }
