@@ -98,8 +98,6 @@ var Deezer = (function (_Externals) {
       switch (state) {
         case -1:
           this.trigger('loadstart');
-          this.trigger('loadedmetadata');
-          this.trigger('durationchange');
           this.trigger('waiting');
           break;
 
@@ -169,7 +167,6 @@ var Deezer = (function (_Externals) {
       });
       this.widgetPlayer = DZ.player;
       _get(Object.getPrototypeOf(Deezer.prototype), 'initTech', this).call(this);
-      this.onStateChange({ type: -1 });
     }
   }, {
     key: 'setupTriggers',

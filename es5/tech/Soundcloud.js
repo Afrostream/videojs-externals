@@ -161,7 +161,6 @@ var Soundcloud = (function (_Externals) {
     value: function initTech() {
       this.widgetPlayer = SC.Widget(this.options_.techId);
       _get(Object.getPrototypeOf(Soundcloud.prototype), 'initTech', this).call(this);
-      this.onStateChange({ type: -1 });
     }
   }, {
     key: 'setupTriggers',

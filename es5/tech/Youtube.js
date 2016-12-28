@@ -81,7 +81,6 @@ var Youtube = (function (_Externals) {
         case -1:
           this.trigger('loadstart');
           this.trigger('loadedmetadata');
-          this.trigger('durationchange');
           break;
 
         case YT.PlayerState.PLAYING:
@@ -185,7 +184,6 @@ var Youtube = (function (_Externals) {
           onError: this.onPlayerError.bind(this)
         }
       });
-
       _get(Object.getPrototypeOf(Youtube.prototype), 'initTech', this).call(this);
     }
   }, {

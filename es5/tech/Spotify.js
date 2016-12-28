@@ -50,6 +50,8 @@ var Spotify = (function (_Externals) {
   _createClass(Spotify, [{
     key: 'createEl',
     value: function createEl() {
+      var _this = this;
+
       var source = null;
       if ('string' === typeof this.options_.source) {
         source = this.options_.source;
@@ -60,6 +62,9 @@ var Spotify = (function (_Externals) {
       var el_ = _get(Object.getPrototypeOf(Spotify.prototype), 'createEl', this).call(this, 'iframe', {
         width: '100%',
         height: '100%',
+        onload: function onload() {
+          return _this.onStateChange({ type: 'apiready' });
+        },
         src: 'https://embed.spotify.com/?uri=' + source
       }, false);
 
@@ -122,7 +127,9 @@ var Spotify = (function (_Externals) {
   }, {
     key: 'src',
     value: function src(_src) {
-      this.el_.src(_src);
+      if (typeof _src !== 'undefined') {
+        this.el_.src(_src);
+      }
     }
   }]);
 
