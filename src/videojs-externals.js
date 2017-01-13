@@ -7,5 +7,6 @@ import './tech/Youtube';
 import './tech/Deezer';
 import './tech/Spotify';
 import './tech/Vimeo';
+import './tech/Dailymotion';
 import './tech/Soundcloud';
 import './component/sub-poster-image';
