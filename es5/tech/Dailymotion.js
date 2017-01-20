@@ -1,5 +1,5 @@
 /**
- * @file Vimeo.js
+ * @file Dailymotion.js
  * Externals (iframe) Media Controller - Wrapper for HTML5 Media API
  */
 'use strict';
@@ -35,7 +35,7 @@ var Tech = _videoJs2['default'].getComponent('Tech');
  * @param {Object=} options Object of option names and values
  * @param {Function=} ready Ready callback function
  * @extends Tech
- * @class Vimeo
+ * @class Dailymotion
  */
 
 var Dailymotion = (function (_Externals) {
@@ -64,6 +64,7 @@ var Dailymotion = (function (_Externals) {
                 id: this.options_.techId,
                 src: 'about:blank'
             });
+            el_.className += ' vjs-dailymotion-loading';
 
             (0, _videoJs2['default'])(this.options_.playerId);
             return el_;
@@ -83,6 +84,12 @@ var Dailymotion = (function (_Externals) {
         key: 'isApiReady',
         value: function isApiReady() {
             return window['DM'] && window['DM']['player'];
+        }
+    }, {
+        key: 'injectCss',
+        value: function injectCss(overrideStyle) {
+            var css = '.vjs-dailymotion.vjs-dailymotion-loading {padding-top: 52.6%;background: transparent;}';
+            _get(Object.getPrototypeOf(Dailymotion.prototype), 'injectCss', this).call(this, css);
         }
     }, {
         key: 'initTech',
@@ -123,6 +130,7 @@ var Dailymotion = (function (_Externals) {
             this.updateVolume();
             this.updatePoster();
             this.onStateChange({ type: 'ready' });
+            this.el_.className.replace(' vjs-dailymotion-loading', ''); // remove loading class
         }
     }, {
         key: 'updatePoster',
@@ -219,8 +227,14 @@ var Dailymotion = (function (_Externals) {
     }, {
         key: 'updateVolume',
         value: function updateVolume() {
-            this.volume_ = this.widgetPlayer.volume;
-            this.trigger('volumechange');
+            var vol = this.widgetPlayer.volume;
+            if (typeof this.volumeBefore_ == "undefined") {
+                this.volumeBefore_ = vol;
+            }
+            if (this.volume_ != vol) {
+                this.volume_ = vol;
+                this.trigger('volumechange');
+            }
         }
     }, {
         key: 'updateEnded',
@@ -321,9 +335,9 @@ Dailymotion.prototype.options_ = {
     visibility: 'visible'
 };
 
-Dailymotion.prototype.className_ = 'Dailymotion';
+Dailymotion.prototype.className_ = 'dailymotion';
 
-/* Vimeo Support Testing -------------------------------------------------------- */
+/* Dailymotion Support Testing -------------------------------------------------------- */
 
 Dailymotion.isSupported = function () {
     return true;
@@ -381,7 +395,7 @@ Dailymotion.nativeSourceHandler.dispose = function () {};
 // Register the native source handler
 Dailymotion.registerSourceHandler(Dailymotion.nativeSourceHandler);
 
-Dailymotion.Events = 'loaded,play,playing,pause,loadedmetadata,durationchange,ended,' + 'timeupdate,progress,seeking,seeked,subtitlechange,' + 'volumechange,error,video_start,video_end,waiting'.split(',');
+Dailymotion.Events = ('loaded,play,playing,pause,loadedmetadata,durationchange,ended,' + 'timeupdate,progress,seeking,seeked,subtitlechange,' + 'volumechange,error,video_start,video_end,waiting').split(',');
 
 Component.registerComponent('Dailymotion', Dailymotion);
 

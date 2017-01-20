@@ -1,5 +1,5 @@
 /**
- * @file Vimeo.js
+ * @file Dailymotion.js
  * Externals (iframe) Media Controller - Wrapper for HTML5 Media API
  */
 import videojs from 'video.js';
@@ -14,7 +14,7 @@ const Tech = videojs.getComponent('Tech');
  * @param {Object=} options Object of option names and values
  * @param {Function=} ready Ready callback function
  * @extends Tech
- * @class Vimeo
+ * @class Dailymotion
  */
 
 class Dailymotion extends Externals {
@@ -38,6 +38,7 @@ class Dailymotion extends Externals {
             id: this.options_.techId,
             src: `about:blank`,
         });
+        el_.className += ' vjs-dailymotion-loading';
 
         videojs(this.options_.playerId);
         return el_;
@@ -56,6 +57,14 @@ class Dailymotion extends Externals {
 
     isApiReady () {
         return window['DM'] && window['DM']['player'];
+    }
+    
+    injectCss (overrideStyle) {
+        if(!overrideStyle) {
+            overrideStyle = '';
+        }
+        overrideStyle += '.vjs-dailymotion.vjs-dailymotion-loading {padding-top: 52.6%;background: transparent;}';
+        super.injectCss(overrideStyle);
     }
 
     initTech () {
@@ -94,6 +103,7 @@ class Dailymotion extends Externals {
         this.updateVolume();
         this.updatePoster();
         this.onStateChange({type: 'ready'});
+        this.el_.className.replace(' vjs-dailymotion-loading', ''); // remove loading class
     }
 
     updatePoster () {
@@ -180,8 +190,14 @@ class Dailymotion extends Externals {
     }
 
     updateVolume () {
-        this.volume_ = this.widgetPlayer.volume;
-        this.trigger('volumechange');
+        let vol = this.widgetPlayer.volume;
+        if(typeof this.volumeBefore_ === 'undefined') {
+            this.volumeBefore_ = vol;
+        }
+        if(this.volume_ !== vol) {
+            this.volume_ = vol;
+            this.trigger('volumechange');
+        }
     }
 
     updateEnded () {
@@ -263,9 +279,9 @@ Dailymotion.prototype.options_ = {
     visibility: 'visible'
 };
 
-Dailymotion.prototype.className_ = 'Dailymotion';
+Dailymotion.prototype.className_ = 'dailymotion';
 
-/* Vimeo Support Testing -------------------------------------------------------- */
+/* Dailymotion Support Testing -------------------------------------------------------- */
 
 Dailymotion.isSupported = function () {
     return true;
@@ -324,9 +340,9 @@ Dailymotion.nativeSourceHandler.dispose = function () {
 // Register the native source handler
 Dailymotion.registerSourceHandler(Dailymotion.nativeSourceHandler);
 
-Dailymotion.Events = 'loaded,play,playing,pause,loadedmetadata,durationchange,ended,'+
+Dailymotion.Events = ('loaded,play,playing,pause,loadedmetadata,durationchange,ended,'+
     'timeupdate,progress,seeking,seeked,subtitlechange,'+
-    'volumechange,error,video_start,video_end,waiting'.split(',');
+    'volumechange,error,video_start,video_end,waiting').split(',');
 
 Component.registerComponent('Dailymotion', Dailymotion);
 
