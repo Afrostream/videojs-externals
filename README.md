@@ -8,7 +8,7 @@
 - [x] Vimeo
 - [x] Spotify (simple embed)
 - [x] Deezer
-- [ ] Dailymotion
+- [x] Dailymotion
 - [ ] Twitch
 
 ## Install
@@ -51,6 +51,9 @@ It supports:
   - Playlist URLs: http://www.youtube.com/playlist?list=PLA60DCEB33156E51F OR http://www.youtube.com/watch?v=xjS6SftYQaQ&list=SPA60DCEB33156E51F
   ###Soundcloud.com
   - https://soundcloud.com/yozzie-b/rhiana-where-have-u-been-ukg
+  ###Dailymotion.com
+  - http://www.dailymotion.com/video/x5822x6_of-shadows-and-wings-d-ombres-et-d-ailes_shortfilms
+  - http://www.dailymotion.com/embed/video/x5822x6
   
 ## Options
 It supports every regular Video.js options. Additionally, you can change any [YouTube parameter](https://developers.google.com/youtube/player_parameters?hl=en#Parameters). Here is an example of setting the `iv_load_policy` parameter to `1`.

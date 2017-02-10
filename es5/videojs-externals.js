@@ -14,6 +14,8 @@ require('./tech/Spotify');
 
 require('./tech/Vimeo');
 
+require('./tech/Dailymotion');
+
 require('./tech/Soundcloud');
 
 require('./component/sub-poster-image');
