@@ -127,7 +127,7 @@
       <input type="text" class="form-control" ng-model="selected.source">
     </div>
     <div class="form-group">
-      <button class="btn btn-primary" ng-click="load()">
+      <button class="btn btn-primary" ng-click="load()" ng-if="selected.source">
         Load source
       </button>
     </div>
