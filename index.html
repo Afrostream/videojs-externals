@@ -19,6 +19,95 @@
   <script src="node_modules/video.js/dist/video.js"></script>
   <script src="dist/videojs-externals.js"></script>
   <script>
+    const CONTAINER_ID = "video-container"
+    const PLAYER_ID = "player"
+
+    function getPlayConfig() {
+      return {
+        controls: true,
+        autoplay: 0,
+        width: 250,
+        techOrder: [
+          , 'dailymotion'
+          , 'deezer'
+          , 'html5'
+          , 'soundcloud'
+          , 'spotify'
+          , 'vimeo'
+          , 'youtube'
+        ]
+      }
+    }
+
+    class SourceSwitcher {
+
+      removePlayer() {
+        return new Promise((resolve, reject) => {
+          if (document.getElementById(PLAYER_ID)) {
+            videojs("player").on("dispose", () => {
+              setTimeout(() => {
+                resolve()
+              }, 10)
+
+            }).dispose()
+          } else {
+            resolve()
+          }
+
+        }).then(function () {
+          var videoContainer = document.getElementById(CONTAINER_ID)
+          Array.prototype.forEach.call(videoContainer.children, videoContainer.removeChild);
+        })
+
+      }
+
+      /**
+       * TODO fix this
+       * We might have to guess the type or let the user define the type themselves!
+       * @param source
+       */
+      dynamically(source) {
+        if (document.getElementById(PLAYER_ID)) {
+          videojs("player").src(source)
+        } else {
+          this.recreateJavascript(source)
+        }
+      }
+
+      recreateJavascript(source) {
+        this.removePlayer().then(function () {
+          var container = document.getElementById(CONTAINER_ID);
+          var video = document.createElement('video');
+          video.id = 'player'
+          video.className = 'video-js vjs-fluid vjs-default-skin'
+          video.crossOrigin = true
+          video.setAttribute('crossorigin', true)
+          container.appendChild(video)
+          var playerConfig = getPlayConfig()
+          playerConfig.sources = [{src: source}]
+          var player = videojs('player', playerConfig)
+        })
+      }
+
+      recreateWithTag(source) {
+        this.removePlayer().then(function () {
+          var container = document.getElementById(CONTAINER_ID);
+          var video = document.createElement('video');
+          video.id = 'player'
+          video.className = 'video-js vjs-fluid vjs-default-skin'
+          video.crossOrigin = true
+          video.setAttribute('crossorigin', true)
+          var sourceTag = document.createElement("source")
+          sourceTag.src = source
+          video.appendChild(sourceTag)
+
+          container.appendChild(video)
+          var player = videojs('player', getPlayConfig())
+        })
+      }
+
+    }
+
     function DemoController($scope) {
 
       $scope.sources = [
@@ -46,59 +135,20 @@
         }
       ]
 
+      // TODO document this
+      $scope.creationTypes = {
+        "dynamically": "Dynamic source change",
+        "recreateJavascript": "recreate player with javascript source",
+        "recreateWithTag": "recreate player with audio/video tag",
+      }
+
       $scope.selected = {
-        "source": null
+        creationType: Object.keys($scope.creationTypes)[0],
+        source: null,
       }
 
       $scope.load = function () {
-        if (!$scope.selected.source) {
-          return
-        }
-        var container = document.getElementById('video-container');
-
-        function createInstance() {
-          var video = document.createElement('video');
-          video.id = 'player';
-          video.className = 'video-js vjs-fluid vjs-default-skin';
-          video.crossOrigin = true;
-          video.setAttribute('crossorigin', true);
-          container.appendChild(video);
-
-          var player = videojs('player', {
-            controls: true,
-            autoplay: 0,
-            width: 250,
-            techOrder: [
-              , 'dailymotion'
-              , 'deezer'
-              , 'html5'
-              , 'soundcloud'
-              , 'spotify'
-              , 'vimeo'
-              , 'youtube'
-            ],
-            sources: [{src: $scope.selected.source}]
-          }).on('loadedmetadata', function (e) {
-            //      alert(e.message);
-          });
-        }
-
-
-        // init instance
-
-        if (document.getElementById("player")) {
-          var player = videojs('player');
-          player.one('dispose', function () {
-
-            container.removeChild(container.firstChild);
-            setTimeout(() => {
-              createInstance();
-            }, 10)
-          });
-          return player.dispose();
-        } else {
-          createInstance()
-        }
+        new SourceSwitcher()[$scope.selected.creationType]($scope.selected.source)
       }
     }
     angular.module("demoApp", ["ui.bootstrap"])
@@ -110,6 +160,23 @@
 <body ng-app="demoApp">
 
 <div ng-controller="DemoController">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Creation options:</h3>
+    </div>
+    <div class="panel-body" role="group">
+      <div class="radio" ng-repeat="(type, description) in creationTypes">
+        <label>
+          <input
+            type="radio"
+            ng-model="selected.creationType"
+            ng-value="type"
+          >
+          {{ description }}
+        </label>
+      </div>
+    </div>
+  </div>
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Source:</h3>
