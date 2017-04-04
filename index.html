@@ -84,7 +84,7 @@
           video.setAttribute('crossorigin', true)
           container.appendChild(video)
           var playerConfig = getPlayConfig()
-          playerConfig.sources = [{src: source}]
+          playerConfig.sources = [source]
           var player = videojs('player', playerConfig)
         })
       }
@@ -98,7 +98,8 @@
           video.crossOrigin = true
           video.setAttribute('crossorigin', true)
           var sourceTag = document.createElement("source")
-          sourceTag.src = source
+          sourceTag.src = source.src
+          sourceTag.type = source.type
           video.appendChild(sourceTag)
 
           container.appendChild(video)
@@ -112,26 +113,29 @@
 
       $scope.sources = [
         {
-          tech: "Dailymotion"
-          ,
-          source: "http://www.dailymotion.com/video/x56imdz_une-pluie-d-hommages-pour-le-chanteur-george-michael-sur-les-reseaux-sociaux_news"
+          tech: "Dailymotion",
+          src: "http://www.dailymotion.com/video/x56imdz_une-pluie-d-hommages-pour-le-chanteur-george-michael-sur-les-reseaux-sociaux_news",
+          type: "video/dailymotion"
         },
         {
-          tech: "Deezer"
-          , source: "http://www.deezer.com/track/1167893"
+          tech: "Deezer",
+          src: "http://www.deezer.com/track/1167893",
+          type: "audio/deezer"
         },
         {
-          tech: "Soundcloud"
-          ,
-          source: "https://soundcloud.com/yozzie-b/rhiana-where-have-u-been-ukg"
+          tech: "Soundcloud",
+          src: "https://soundcloud.com/yozzie-b/rhiana-where-have-u-been-ukg",
+          type: "audio/soundcloud"
         },
         {
-          tech: "Vimeo"
-          , source: "https://vimeo.com/210321457"
+          tech: "Vimeo",
+          src: "https://vimeo.com/210321457",
+          type: "video/vimeo"
         },
         {
-          tech: "Youtube"
-          , source: "https://www.youtube.com/watch?v=DIDp05SHJVk"
+          tech: "Youtube",
+          src: "https://www.youtube.com/watch?v=DIDp05SHJVk",
+          type: "video/youtube"
         }
       ]
 
@@ -144,7 +148,8 @@
 
       $scope.selected = {
         creationType: Object.keys($scope.creationTypes)[0],
-        source: null,
+        source: $scope.sources[0],
+
       }
 
       $scope.load = function () {
@@ -159,7 +164,9 @@
 </head>
 <body ng-app="demoApp">
 
-<div ng-controller="DemoController">
+<div class="container" ng-controller="DemoController">
+
+  <!-- Creation selection -->
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Creation options:</h3>
@@ -177,21 +184,24 @@
       </div>
     </div>
   </div>
+
+  <!-- Source selection -->
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Source:</h3>
     </div>
     <div class="panel-body btn-group" role="group">
       <button
-        class="btn btn-default"
         ng-repeat="source in sources"
-        ng-click="selected.source = source.source"
+        ng-model="selected.source"
+        uib-btn-radio="source"
       >
         {{ source.tech }}
       </button>
     </div>
+    <pre>{{ selected.source |json}}</pre>
     <div class="form-group">
-      <input type="text" class="form-control" ng-model="selected.source">
+      <input type="text" class="form-control" ng-model="selected.source.src">
     </div>
     <div class="form-group">
       <button class="btn btn-primary" ng-click="load()" ng-if="selected.source">
