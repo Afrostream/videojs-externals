@@ -39,8 +39,17 @@
       }
     }
 
+    /**
+     * Used to determine how we will be switching the source
+     */
     class SourceSwitcher {
 
+        /**
+         * Helper to get rid of the existing player, if it exists
+         *
+         * @return {Promise}
+         *    fulfilled once the player is disposed and the element destroyed
+         */
       removePlayer() {
         return new Promise((resolve, reject) => {
           if (document.getElementById(PLAYER_ID)) {
@@ -62,9 +71,10 @@
       }
 
       /**
-       * TODO fix this
-       * We might have to guess the type or let the user define the type themselves!
-       * @param source
+       * Doesn't recreate a player and simply tells videojs to switch to it
+       *
+       * @param {Object} source
+       *      A videojs source object with src and type
        */
       dynamically(source) {
         if (document.getElementById(PLAYER_ID)) {
@@ -74,6 +84,12 @@
         }
       }
 
+      /**
+       * Recreates the videojs player and passed the source to the constructor
+       *
+       * @param source {Object}
+       *      A videojs source object with src and type
+       */
       recreateJavascript(source) {
         this.removePlayer().then(function () {
           var container = document.getElementById(CONTAINER_ID);
@@ -89,6 +105,13 @@
         })
       }
 
+      /**
+       * Destroys the existing player and recreates it.
+       * The source is created as a DOM element (<source>)
+       *
+       * @param source {Object}
+       *      A videojs source object with src and type
+       */
       recreateWithTag(source) {
         this.removePlayer().then(function () {
           var container = document.getElementById(CONTAINER_ID);
@@ -139,7 +162,6 @@
         }
       ]
 
-      // TODO document this
       $scope.creationTypes = {
         "dynamically": "Dynamic source change",
         "recreateJavascript": "recreate player with javascript source",
